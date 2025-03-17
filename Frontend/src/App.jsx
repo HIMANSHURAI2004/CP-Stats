@@ -1,11 +1,19 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SignUp from "./pages/SignUp";
+import SignIn from "./pages/SignIn";
+import HomePage from "./pages/HomePage";
 
 function App() {
-
   return (
-    <>
-      <div className='text-4xl text-blue-600'>Hello this is new Project</div>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        {/* <Route path="/" element={<SignUp />} /> */}
+        {/* <Route path="/" element={<SignIn />} /> */}
+
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
