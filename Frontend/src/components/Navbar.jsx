@@ -248,7 +248,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu */}
-          <div className="flex md:hidden">
+          <div className="flex md:hidden ">
             <Sheet>
               <SheetTrigger asChild>
                 <Button
@@ -260,9 +260,9 @@ export default function Navbar() {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="border-gray-800 bg-gray-900/95 backdrop-blur-md">
-                <div className="grid gap-6 py-6">
-                  <div className="flex flex-col space-y-3">
+              <SheetContent side="right" className="border-gray-800 bg-gray-900/95 backdrop-blur-md ">
+                <div className="grid gap-6 py-6 ">
+                  <div className="flex flex-col space-y-3 pl-2">
                     <NavLink href="/contests" currentPath={pathname} mobile>
                       Contests
                     </NavLink>
@@ -276,7 +276,7 @@ export default function Navbar() {
                       Profile
                     </NavLink>
                   </div>
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-2 px-2">
                     {isLoggedIn ? (
                       <Button
                         onClick={toggleLogin}
