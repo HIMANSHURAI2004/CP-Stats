@@ -175,7 +175,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         // secure: true,
-    };
+    }; 
 
     const tokens = await generateAccessAndRefreshTokens(user._id);
 
