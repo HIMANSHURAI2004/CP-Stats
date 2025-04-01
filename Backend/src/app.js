@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import errorHandler from "./utils/ErrorHandler";
+import errorHandler from "./utils/ErrorHandler.js";
 const app = express();
 
 dotenv.config()
@@ -21,5 +21,13 @@ app.use(cookieParser());
 
 
 app.use(errorHandler);
+
+import userRouter from "./routes/user.routes.js";
+
+
+app.use("/api/v1/user",userRouter);
+
+
+
 
 export {app}
