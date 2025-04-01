@@ -3,23 +3,28 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-import { asyncHandler } from "../utils/asyncHandler";
-import { ApiError } from "../utils/ApiError";
-import { User } from "../models/User";
-import { ApiResponse } from "../utils/ApiResponse";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { User } from "../models/user.model.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password ,name } = req.body;
 
     if (!email) {
         throw new ApiError(400, "Email is required");
     }
 
+    if (!name) {
+        throw new ApiError(400, "Name is required");
+    }
+    
     if (!password) {
         throw new ApiError(400, "Password is required");
     }
 
     const user = await User.create({
+        name,
         email,
         password
     });
@@ -43,14 +48,14 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const {email, password } = req.body;
 
     if (!email) {
         throw new ApiError(400, "Email is required");
     }
 
     const user = await User.findOne({
-        username
+        email
     });
 
     if (!user) {
@@ -194,3 +199,12 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             new ApiResponse(200, currentUser, "Current User Fetched Successfully")
         );
 });
+
+export {
+    registerUser,
+    loginUser,
+    logoutUser,
+    refreshAccessToken,
+    getCurrentUser,
+    changeCurrentPassword,
+};

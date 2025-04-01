@@ -17,8 +17,8 @@ function App() {
         <Route path="/submissions" element={<SubmissionPage/>}/>
         <Route path="/statistics" element={<StatisticsPage/>}/>
 
-        {/* <Route path="/" element={<SignUp />} /> */}
-        {/* <Route path="/" element={<SignIn />} /> */}
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<SignIn />} />
 
       </Routes>
     </Router>

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form"
 import { Input } from "../components/ui/input"
 import { Link } from "react-router-dom";
+import axios from 'axios'
 
 
 function SignUp() {
@@ -19,7 +20,37 @@ function SignUp() {
         },
       })
 
-    const onSubmit = () => {}  
+    const onSubmit =async () => {
+        try {
+          setIsLoading(true);
+          const formData = form.getValues();
+          const { name, email, password } = formData;
+          const data = { name, email, password };
+          console.log("Form data:", data);
+          const response = await axios.post("http://localhost:3000/api/v1/user/register", data, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          console.log("Response:", response);
+          
+
+          if (response.status === 201) {
+            console.log("Signup successful:", response.data);
+            setIsLoading(false);
+            window.location.href = "/login";
+          }
+          else {
+            console.error("Signup failed:", response.data);
+            setIsLoading(false);
+          }
+
+        } catch (error) {
+          setIsLoading(false);
+          console.error("Error during signup:", error);
+        }
+        
+    }  
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 p-4 font-[poppins]">
           <div className="absolute inset-0 overflow-hidden">
