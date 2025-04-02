@@ -8,8 +8,27 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
+const generateAccessAndRefreshTokens = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+
+        const accessToken = await user.generateAccessToken();
+        const refreshToken = await user.generateRefreshToken();
+
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false });
+
+        return { accessToken, refreshToken };
+    } catch (error) {
+        throw new ApiError(
+            500,
+            "Something went wrong while generating refresh and access tokens"
+        );
+    }
+};
+
 const registerUser = asyncHandler(async (req, res) => {
-    const { email, password ,name } = req.body;
+    const { email, password, name } = req.body;
 
     if (!email) {
         throw new ApiError(400, "Email is required");
@@ -18,7 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!name) {
         throw new ApiError(400, "Name is required");
     }
-    
+
     if (!password) {
         throw new ApiError(400, "Password is required");
     }
@@ -48,7 +67,7 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    const {email, password } = req.body;
+    const { email, password } = req.body;
 
     if (!email) {
         throw new ApiError(400, "Email is required");
@@ -180,7 +199,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         // secure: true,
-    }; 
+    };
 
     const tokens = await generateAccessAndRefreshTokens(user._id);
 
