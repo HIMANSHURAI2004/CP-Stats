@@ -4,6 +4,8 @@ import { User, Mail, Award, Code, Terminal } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
 import Navbar from "../components/navbar"
+import axios from "axios"
+import { useEffect, useState } from "react"
 
 // Sample user data
 const userData = {
@@ -44,6 +46,33 @@ const userData = {
 }
 
 export default function ProfilePage() {
+  const [userDetails,setUserDetails] = useState({});
+  const [name,setName]=useState("")
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/v1/user/get-user", { withCredentials: true })
+      
+      if (response.status === 200) {
+        const userData = response?.data?.data;
+        setUserDetails(userData);
+        setName(userData.name)
+          
+        // console.log("User data:", userData);
+        // Set user data in state or context as needed
+      } else {
+        console.error("Failed to fetch user details:", response.data);
+      }
+
+      
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    } 
+  }
+
+  useEffect(() =>{
+    getUserDetails();
+    
+  },[userDetails])
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
       <Navbar />
@@ -68,7 +97,7 @@ export default function ProfilePage() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-shrink-0">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
-                    {userData.name
+                    {name
                       .split(" ")
                       .map((n) => n[0])
                       .join("")}
@@ -79,14 +108,14 @@ export default function ProfilePage() {
                     <div className="text-sm font-medium text-gray-400">Full Name</div>
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-indigo-400" />
-                      <span className="text-white">{userData.name}</span>
+                      <span className="text-white">{userDetails.name}</span>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <div className="text-sm font-medium text-gray-400">Email Address</div>
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-indigo-400" />
-                      <span className="text-white">{userData.email}</span>
+                      <span className="text-white">{userDetails.email}</span>
                     </div>
                   </div>
                 </div>

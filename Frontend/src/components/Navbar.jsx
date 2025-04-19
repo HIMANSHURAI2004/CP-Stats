@@ -1,12 +1,11 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Code,
   ArrowRight,
   Menu,
   User,
   LogOut,
-  Settings,
   ChevronDown,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -20,14 +19,61 @@ import {
 } from "../components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
+import axios from "axios";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
+  const [name,setName]=useState("")
   const pathname = location.pathname;
+  const navigate = useNavigate();
+  const [userDetails,setUserDetails] = useState({});
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/v1/user/get-user", { withCredentials: true })
+      if (response.status === 200) {
+        const userData = response.data.data;
+        // console.log("User data:", userData);
+        setIsLoggedIn(true);
+        setUserDetails(userData);
+        setName(userData.name)
+        // Set user data in state or context as needed
+      } else {
+        console.error("Failed to fetch user details:", response.data);
+        setIsLoggedIn(false);
+      }
 
+      
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    } 
+  }
   // Toggle login state (for demo purposes)
-  const toggleLogin = () => setIsLoggedIn(!isLoggedIn);
+  const logOutUser = async () =>{
+    try {
+      const response =await axios.get("http://localhost:3000/api/v1/user/logout",{withCredentials : true});
+      if(response.status==200)
+      {
+        console.log("User logged out succesfully");
+        setIsLoggedIn(false)
+        navigate("/login")
+      }
+      
+
+    } catch (error) {
+      console.error("User logout unsucessful :",error);
+      setIsLoggedIn(true);
+    }
+    
+  }
+
+  const toggleLogin = () => {
+      logOutUser();
+  };
+
+  useEffect(() => {
+    getUserDetails();
+  },[userDetails])
 
   return (
     <div className="relative font-[poppins]">
@@ -138,10 +184,13 @@ export default function Navbar() {
                         alt="@user"
                       />
                       <AvatarFallback className="bg-gradient-to-br from-violet-600 to-indigo-600 text-white">
-                        HR
+                      {name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="hidden sm:inline-block">Himanshu</span>
+                    <span className="hidden sm:inline-block">{userDetails.name}</span>
                     <ChevronDown className="h-4 w-4 opacity-60" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -152,22 +201,21 @@ export default function Navbar() {
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none text-white">
-                        Himanshu
+                        {userDetails.name}
                       </p>
                       <p className="text-xs leading-none text-gray-400">
-                        himanshu@gmail.com
+                        {userDetails.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-gray-800" />
                   <DropdownMenuItem className="hover:bg-gray-800 hover:text-white focus:bg-gray-800 cursor-pointer">
                     <User className="mr-2 h-4 w-4 text-gray-400" />
-                    Profile
+                    <NavLink to="/profile" currentPath={pathname}>
+                      Profile
+                    </NavLink>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:bg-gray-800 hover:text-white focus:bg-gray-800 cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4 text-gray-400" />
-                    Settings
-                  </DropdownMenuItem>
+                  
                   <DropdownMenuSeparator className="bg-gray-800" />
                   <DropdownMenuItem
                     onClick={toggleLogin}

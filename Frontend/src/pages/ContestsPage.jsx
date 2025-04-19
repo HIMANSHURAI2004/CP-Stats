@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import {Link} from "react-router-dom"
 import { Calendar, Clock, ExternalLink } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../components/ui/card"
@@ -8,6 +7,8 @@ import { Badge } from "../components/ui/badge"
 import { Checkbox } from "../components/ui/checkbox"
 import { Label } from "../components/ui/label"
 import Navbar from "../components/navbar"
+import axios from "axios"
+import { useQuery } from "@tanstack/react-query"
 
 // Sample contest data
 const contestsData = [
@@ -118,6 +119,37 @@ export default function ContestsPage() {
     return new Date(dateString).toLocaleDateString("en-US", options)
   }
 
+  const fetchUpcomingContests = async () =>{
+    const response = await axios.get("http://localhost:3000/api/v1/contest/upcomingContests",{
+      withCredentials: true,
+    });
+    return response.data;
+  }
+
+  const { data, isLoading , isError , error} = useQuery({
+    queryKey : ["upcomingContests"],
+    queryFn : fetchUpcomingContests,
+  })
+  
+  console.log(data);
+  
+  useEffect(() => {
+    let filtered = data?.data.filter((contest) => contest.status === activeTab)
+    
+    if (!selectedPlatforms.includes("all")) {
+      filtered = filtered.filter((contest) => selectedPlatforms.includes(contest.site.toLowerCase()))
+    }
+    setFilteredContests(filtered)
+  }, [selectedPlatforms, activeTab,data])
+
+
+  if(isLoading){
+    return <div className="text-white text-center py-10">Loading...</div>
+  }
+
+  if(isError){
+    return <div className="text-white text-center py-10">Error: {error.message}</div>
+  }
   // Format duration function
   const formatDuration = (minutes) => {
     const hours = Math.floor(minutes / 60)
@@ -141,15 +173,6 @@ export default function ContestsPage() {
   }
 
   // Filter contests based on selected platforms and active tab
-  useEffect(() => {
-    let filtered = contestsData.filter((contest) => contest.status === activeTab)
-
-    if (!selectedPlatforms.includes("all")) {
-      filtered = filtered.filter((contest) => selectedPlatforms.includes(contest.site.toLowerCase()))
-    }
-
-    setFilteredContests(filtered)
-  }, [selectedPlatforms, activeTab])
 
   // Get platform badge color
   const getPlatformColor = (platform) => {
@@ -219,20 +242,20 @@ export default function ContestsPage() {
             {/* Tab content */}
             {["past", "ongoing", "upcoming"].map((status) => (
               <TabsContent key={status} value={status} className="mt-6">
-                {filteredContests.length === 0 ? (
+                {filteredContests?.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-gray-400">No {status} contests found for the selected platforms.</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredContests.map((contest) => (
+                    {filteredContests?.map((contest) => (
                       <Card
                         key={contest.id}
                         className="border-gray-800 bg-gray-900/50 backdrop-blur-sm overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300"
                       >
                         <CardHeader className="pb-3">
                           <div className="flex justify-between items-start">
-                            <Badge className={`bg-gradient-to-r ${getPlatformColor(contest.site)} text-white border-0`}>
+                            <Badge className={`bg-gradient-to-r ${getPlatformColor(contest.site)} text-white border-0 text-xs uppercase`}>
                               {contest.site}
                             </Badge>
                             {status === "ongoing" && (
@@ -249,7 +272,7 @@ export default function ContestsPage() {
                             </div>
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4 text-indigo-400" />
-                              <span>Duration: {formatDuration(contest.duration)}</span>
+                              <span>Duration: {formatDate(contest.duration)}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4 text-indigo-400" />
@@ -262,7 +285,7 @@ export default function ContestsPage() {
                             asChild
                             className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 transition-all duration-300"
                           >
-                            <Link href={contest.url} target="_blank" rel="noopener noreferrer">
+                            <a href={contest.url} target="_blank" rel="noopener noreferrer">
                               <span>
                                 {status === "upcoming"
                                   ? "Register"
@@ -271,7 +294,7 @@ export default function ContestsPage() {
                                     : "View Results"}
                               </span>
                               <ExternalLink className="ml-2 h-4 w-4" />
-                            </Link>
+                            </a>
                           </Button>
                         </CardFooter>
                       </Card>

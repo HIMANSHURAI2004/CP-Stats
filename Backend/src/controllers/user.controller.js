@@ -99,9 +99,10 @@ const loginUser = asyncHandler(async (req, res) => {
     // set cookie options
     const cookieOptions = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/",
+        // secure: process.env.NODE_ENV === "production",
+        secure:true,
+        // sameSite: "lax",
+        // path: "/",
     };
 
     return res
@@ -142,7 +143,8 @@ const logoutUser = asyncHandler(async (req, res) => {
     // set cookie options
     const cookieOptions = {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== "production",
+        // secure: process.env.NODE_ENV !== "production",
+        secure: true
     };
 
     // return response

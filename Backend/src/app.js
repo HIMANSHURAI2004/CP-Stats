@@ -28,6 +28,8 @@ import userRouter from "./routes/user.routes.js";
 app.use("/api/v1/user",userRouter);
 
 
+import contestRouter from "./routes/contest.routes.js";
 
+app.use("/api/v1/contest",contestRouter);
 
 export {app}

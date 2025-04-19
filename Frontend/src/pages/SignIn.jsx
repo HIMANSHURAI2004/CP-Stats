@@ -24,10 +24,11 @@ function SignIn() {
         const formData = form.getValues();
         const { email, password } = formData;
         const data = { email, password };
-        const response = await axios.post("http://localhost:3000/api/v1/user/login", data, {}, {
+        const response = await axios.post("http://localhost:3000/api/v1/user/login", data, { withCredentials: true }, {
           headers: {
             "Content-Type": "application/json",
           },
+
         });
 
         console.log("Response:", response);
