@@ -32,4 +32,9 @@ import contestRouter from "./routes/contest.routes.js";
 
 app.use("/api/v1/contest",contestRouter);
 
+
+import leetcodeRouter from "./routes/leetcode.routes.js";
+
+app.use("/api/v1/leetcode", leetcodeRouter);
+
 export {app}
