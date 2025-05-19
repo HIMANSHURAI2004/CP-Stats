@@ -9,6 +9,8 @@ import { Label } from "../components/ui/label"
 import Navbar from "../components/navbar"
 import axios from "axios"
 import { useQuery } from "@tanstack/react-query"
+import UpcomingContests from "../components/UpcomingContest"
+import OngoingContest from "../components/OngoingContest"
 
 // Sample contest data
 const contestsData = [
@@ -107,18 +109,6 @@ export default function ContestsPage() {
   const [selectedPlatforms, setSelectedPlatforms] = useState(["all"])
   const [filteredContests, setFilteredContests] = useState(contestsData)
 
-  // Format date function
-  const formatDate = (dateString) => {
-    const options = {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }
-    return new Date(dateString).toLocaleDateString("en-US", options)
-  }
-
   const fetchUpcomingContests = async () =>{
     const response = await axios.get("http://localhost:3000/api/v1/contest/upcomingContests",{
       withCredentials: true,
@@ -131,7 +121,6 @@ export default function ContestsPage() {
     queryFn : fetchUpcomingContests,
   })
   
-  console.log(data);
   
   useEffect(() => {
     let filtered = data?.data.filter((contest) => contest.status === activeTab)
@@ -142,6 +131,8 @@ export default function ContestsPage() {
     setFilteredContests(filtered)
   }, [selectedPlatforms, activeTab,data])
 
+  // console.log(filteredContests);
+  
 
   if(isLoading){
     return <div className="text-white text-center py-10">Loading...</div>
@@ -149,12 +140,6 @@ export default function ContestsPage() {
 
   if(isError){
     return <div className="text-white text-center py-10">Error: {error.message}</div>
-  }
-  // Format duration function
-  const formatDuration = (minutes) => {
-    const hours = Math.floor(minutes / 60)
-    const mins = minutes % 60
-    return `${hours > 0 ? `${hours}h ` : ""}${mins > 0 ? `${mins}m` : ""}`
   }
 
   // Handle platform filter change
@@ -172,21 +157,7 @@ export default function ContestsPage() {
     })
   }
 
-  // Filter contests based on selected platforms and active tab
-
-  // Get platform badge color
-  const getPlatformColor = (platform) => {
-    switch (platform.toLowerCase()) {
-      case "leetcode":
-        return "from-yellow-500 to-orange-500"
-      case "codeforces":
-        return "from-red-500 to-rose-600"
-      case "codechef":
-        return "from-emerald-500 to-teal-600"
-      default:
-        return "from-violet-600 to-indigo-600"
-    }
-  }
+  // 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
@@ -247,58 +218,17 @@ export default function ContestsPage() {
                     <p className="text-gray-400">No {status} contests found for the selected platforms.</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredContests?.map((contest) => (
-                      <Card
-                        key={contest.id}
-                        className="border-gray-800 bg-gray-900/50 backdrop-blur-sm overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300"
-                      >
-                        <CardHeader className="pb-3">
-                          <div className="flex justify-between items-start">
-                            <Badge className={`bg-gradient-to-r ${getPlatformColor(contest.site)} text-white border-0 text-xs uppercase`}>
-                              {contest.site}
-                            </Badge>
-                            {status === "ongoing" && (
-                              <Badge className="bg-green-600 text-white border-0 animate-pulse">Live</Badge>
-                            )}
-                          </div>
-                          <CardTitle className="text-white mt-2 line-clamp-2">{contest.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="pb-3">
-                          <div className="space-y-3 text-gray-400">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4 text-indigo-400" />
-                              <span>Starts: {formatDate(contest.startTime)}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Clock className="h-4 w-4 text-indigo-400" />
-                              <span>Duration: {formatDate(contest.duration)}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4 text-indigo-400" />
-                              <span>Ends: {formatDate(contest.endTime)}</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                        <CardFooter>
-                          <Button
-                            asChild
-                            className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 transition-all duration-300"
-                          >
-                            <a href={contest.url} target="_blank" rel="noopener noreferrer">
-                              <span>
-                                {status === "upcoming"
-                                  ? "Register"
-                                  : status === "ongoing"
-                                    ? "Join Now"
-                                    : "View Results"}
-                              </span>
-                              <ExternalLink className="ml-2 h-4 w-4" />
-                            </a>
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    ))}
+                  <div>
+                    {
+                      status === "upcoming" && (
+                        <UpcomingContests contest={filteredContests} />
+                      )
+                    }
+                    {
+                      status === "ongoing" && (
+                        <OngoingContest contest={filteredContests} />
+                      )
+                    }
                   </div>
                 )}
               </TabsContent>
