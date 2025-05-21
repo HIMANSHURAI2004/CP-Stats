@@ -1,4 +1,4 @@
-export const  statsQuery = `
+export const statsQuery = `
     query userProblemsSolved($username: String!) {
       matchedUser(username: $username) {
         problemsSolvedBeatsStats {
@@ -15,7 +15,7 @@ export const  statsQuery = `
     }
 `;
 
-export const  publicProfileQuery = `
+export const publicProfileQuery = `
     query userPublicProfile($username: String!) {
       matchedUser(username: $username) {
         contestBadge {
@@ -52,7 +52,7 @@ export const  publicProfileQuery = `
     }
 `;
 
-export const  languageStatsQuery = `
+export const languageStatsQuery = `
 query languageStats($username: String!) {
   matchedUser(username: $username) {
     languageProblemCount {
@@ -63,7 +63,7 @@ query languageStats($username: String!) {
 }
   `;
 
-export const  userContestRankingInfoQuery = `
+export const userContestRankingInfoQuery = `
 query userContestRankingInfo($username: String!) {
   userContestRanking(username: $username) {
     attendedContestsCount
@@ -92,7 +92,7 @@ query userContestRankingInfo($username: String!) {
     
       `;
 
-export const  userBadgesQuery = `
+export const userBadgesQuery = `
       query userBadges($username: String!) {
     matchedUser(username: $username) {
       badges {
@@ -121,7 +121,7 @@ export const  userBadgesQuery = `
   }
   `;
 
-export const  userProfileCalendarQuery = `
+export const userProfileCalendarQuery = `
   query userProfileCalendar($username: String!, $year: Int) {
     matchedUser(username: $username) {
       userCalendar(year: $year) {
@@ -141,7 +141,7 @@ export const  userProfileCalendarQuery = `
   }
   `;
 
-export const  recentAcSubmissionsQuery = `
+export const recentAcSubmissionsQuery = `
   query recentAcSubmissions($username: String!, $limit: Int!) {
     recentAcSubmissionList(username: $username, limit: $limit) {
       id
@@ -152,7 +152,7 @@ export const  recentAcSubmissionsQuery = `
   }
       `;
 
-export const  getStreakCounterQuery = `
+export const getStreakCounterQuery = `
       query getStreakCounter {
     streakCounter {
       streakCount
@@ -160,3 +160,27 @@ export const  getStreakCounterQuery = `
       currentDayCompleted
     }
   }`;
+
+export const pastContestsQuery = `
+  query pastContests($pageNo: Int, $numPerPage: Int) {
+    pastContests(pageNo: $pageNo, numPerPage: $numPerPage) {
+      pageNum
+      currentPage
+      totalNum
+      numPerPage
+      data {
+        title
+        titleSlug
+        startTime
+        originStartTime
+        cardImg
+        sponsors {
+          name
+          lightLogo
+          darkLogo
+        }
+      }
+    }
+  }
+`;
+

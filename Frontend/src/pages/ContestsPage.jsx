@@ -11,6 +11,7 @@ import axios from "axios"
 import { useQuery } from "@tanstack/react-query"
 import UpcomingContests from "../components/UpcomingContest"
 import OngoingContest from "../components/OngoingContest"
+import PastContest from "../components/PastContest"
 
 // Sample contest data
 const contestsData = [
@@ -108,38 +109,55 @@ export default function ContestsPage() {
   const [activeTab, setActiveTab] = useState("upcoming")
   const [selectedPlatforms, setSelectedPlatforms] = useState(["all"])
   const [filteredContests, setFilteredContests] = useState(contestsData)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [perPage, setPerPage] = useState(10)
 
-  const fetchUpcomingContests = async () =>{
-    const response = await axios.get("http://localhost:3000/api/v1/contest/upcomingContests",{
+  const fetchUpcomingContests = async () => {
+    const response = await axios.get("http://localhost:3000/api/v1/contest/upcomingContests", {
       withCredentials: true,
     });
     return response.data;
   }
 
-  const { data, isLoading , isError , error} = useQuery({
-    queryKey : ["upcomingContests"],
-    queryFn : fetchUpcomingContests,
+  const fetchPastContests = async () => {
+    const response = await axios.get(`http://localhost:3000/api/v1/leetcode/lcprofile/pastContests?page=${currentPage}&perPage=${perPage}`, {
+      withCredentials: true,
+    });
+    return response.data;
+  }
+
+  const { data: upcomingData, isLoading: upcomingLoading, isError: upcomingError, error: upcomingErrorMsg } = useQuery({
+    queryKey: ["upcomingContests"],
+    queryFn: fetchUpcomingContests,
   })
-  
-  
+
+  const { data: pastData, isLoading: pastLoading, isError: pastError, error: pastErrorMsg } = useQuery({
+    queryKey: ["pastContests", currentPage, perPage],
+    queryFn: fetchPastContests,
+  })
+
   useEffect(() => {
-    let filtered = data?.data.filter((contest) => contest.status === activeTab)
-    
+    let filtered = [];
+    if (activeTab === "upcoming") {
+      filtered = upcomingData?.data || [];
+    } else if (activeTab === "past") {
+      filtered = pastData?.data?.contests || [];
+    } else {
+      filtered = data?.data || [];
+    }
+
     if (!selectedPlatforms.includes("all")) {
-      filtered = filtered.filter((contest) => selectedPlatforms.includes(contest.site.toLowerCase()))
+      filtered = filtered.filter((contest) => selectedPlatforms.includes(contest.site?.toLowerCase() || "leetcode"))
     }
     setFilteredContests(filtered)
-  }, [selectedPlatforms, activeTab,data])
+  }, [selectedPlatforms, activeTab, upcomingData, pastData, currentPage, perPage])
 
-  // console.log(filteredContests);
-  
-
-  if(isLoading){
+  if (upcomingLoading || pastLoading) {
     return <div className="text-white text-center py-10">Loading...</div>
   }
 
-  if(isError){
-    return <div className="text-white text-center py-10">Error: {error.message}</div>
+  if (upcomingError || pastError) {
+    return <div className="text-white text-center py-10">Error: {upcomingErrorMsg?.message || pastErrorMsg?.message}</div>
   }
 
   // Handle platform filter change
@@ -156,8 +174,6 @@ export default function ContestsPage() {
       }
     })
   }
-
-  // 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
@@ -219,16 +235,40 @@ export default function ContestsPage() {
                   </div>
                 ) : (
                   <div>
-                    {
-                      status === "upcoming" && (
-                        <UpcomingContests contest={filteredContests} />
-                      )
-                    }
-                    {
-                      status === "ongoing" && (
-                        <OngoingContest contest={filteredContests} />
-                      )
-                    }
+                    {status === "upcoming" && (
+                      <UpcomingContests contest={filteredContests} />
+                    )}
+                    {status === "ongoing" && (
+                      <OngoingContest contest={filteredContests} />
+                    )}
+                    {status === "past" && (
+                      <>
+                        <PastContest contest={filteredContests} />
+                        {pastData?.data?.pagination && (
+                          <div className="flex justify-center items-center gap-4 mt-6">
+                            <Button
+                              variant="outline"
+                              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                              disabled={currentPage === 1}
+                              className="border-gray-700 hover:bg-gray-800 hover:text-white"
+                            >
+                              Previous
+                            </Button>
+                            <span className="text-gray-400">
+                              Page {currentPage} of {Math.ceil(pastData.data.pagination.totalNum / perPage)}
+                            </span>
+                            <Button
+                              variant="outline"
+                              onClick={() => setCurrentPage(prev => prev + 1)}
+                              disabled={currentPage >= Math.ceil(pastData.data.pagination.totalNum / perPage)}
+                              className="border-gray-700 hover:bg-gray-800 hover:text-white"
+                            >
+                              Next
+                            </Button>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 )}
               </TabsContent>

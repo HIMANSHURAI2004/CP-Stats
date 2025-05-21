@@ -7,6 +7,7 @@ import {
   userProfileCalendarQuery,
   recentAcSubmissionsQuery,
   getStreakCounterQuery,
+  pastContestsQuery,
 } from "../queries/query.js";
 
 import { handleRequest } from "../httpRequests/request.js";
@@ -51,6 +52,40 @@ const getStreakCounter = async () => {
   return data;
 };
 
+const getPastContests = async (pageNo = 1, numPerPage = 10) => {
+  try {
+    const data = await handleRequest(pastContestsQuery, { pageNo, numPerPage });
+    console.log("LeetCode API Response:", data); // Debug log
+    
+    if (!data || !data.pastContests) {
+      throw new Error("Invalid response format from LeetCode API");
+    }
+    
+    const contests = data.pastContests.data.map(contest => ({
+      title: contest.title,
+      titleSlug: contest.titleSlug,
+      startTime: contest.startTime,
+      originStartTime: contest.originStartTime,
+      cardImg: contest.cardImg,
+      sponsors: contest.sponsors,
+      url: `https://leetcode.com/contest/${contest.titleSlug}`
+    }));
+
+    return {
+      contests,
+      pagination: {
+        pageNum: data.pastContests.pageNum,
+        currentPage: data.pastContests.currentPage,
+        totalNum: data.pastContests.totalNum,
+        numPerPage: data.pastContests.numPerPage
+      }
+    };
+  } catch (error) {
+    console.error("Error fetching past contests:", error);
+    throw error;
+  }
+};
+
 export {
   getLeetCodeStats,
   getPublicProfile,
@@ -60,5 +95,6 @@ export {
   getUserProfileCalendar,
   getRecentAcSubmissions,
   getStreakCounter,
+  getPastContests,
 };
 

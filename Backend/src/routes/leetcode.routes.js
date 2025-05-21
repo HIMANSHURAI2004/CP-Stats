@@ -8,6 +8,7 @@ import {
   getUserProfileCalendar,
   getRecentAcSubmissions,
   getStreakCounter,
+  getPastContests,
 } from "../controllers/leetcodeprofile.controller.js";
 
 const router = express.Router();
@@ -144,6 +145,19 @@ router.get("/lcprofile/recentAcSubmissions", async (req, res) => {
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Error while fetching data for /recentAcSubmissions");
+  }
+});
+
+router.get("/lcprofile/pastContests", async (req, res) => {
+  const pageNo = parseInt(req.query.page) || 1;
+  const numPerPage = parseInt(req.query.perPage) || 10;
+  
+  try {
+    const data = await getPastContests(pageNo, numPerPage);
+    res.json({ data });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Error while fetching past contests data");
   }
 });
 
