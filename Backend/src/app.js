@@ -34,7 +34,9 @@ app.use("/api/v1/contest",contestRouter);
 
 
 import leetcodeRouter from "./routes/leetcode.routes.js";
+import codeforcesRoutes from './routes/codeforces.routes.js';
 
 app.use("/api/v1/leetcode", leetcodeRouter);
+app.use('/api/v1/codeforces', codeforcesRoutes);
 
 export {app}

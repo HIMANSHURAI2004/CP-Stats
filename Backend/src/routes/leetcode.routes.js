@@ -9,29 +9,10 @@ import {
   getRecentAcSubmissions,
   getStreakCounter,
   getPastContests,
+  getSkillStats,
 } from "../controllers/leetcodeprofile.controller.js";
 
 const router = express.Router();
-
-router.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to the Leetcode RESTful API",
-    github: "https://github.com/siddanth-6365/leetcode-Stats-api",
-    info: "For more details, please refer to the API documentation: https://leetcode-restful-api.vercel.app/ApiDocs/setup",
-    note: "Pass username as query parameter or route param as per endpoint",
-    endpoints: [
-      "/profile/:username",
-      "/profile?username=",
-      "/publicProfile?username=",
-      "/languageStats?username=",
-      "/userContestRankingInfo?username=",
-      "/userBadges?username=",
-      "/userProfileCalendar?username=",
-      "/streakCounter?username=",
-      "/recentAcSubmissions?username=&limit=",
-    ],
-  });
-});
 
 router.get("/lcprofile/profile/:username", async (req, res) => {
   const { username } = req.params;
@@ -158,6 +139,20 @@ router.get("/lcprofile/pastContests", async (req, res) => {
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Error while fetching past contests data");
+  }
+});
+
+// Get skill stats
+router.get("/lcprofile/skillStats", async (req, res) => {
+  const { username } = req.query;
+  if (!username) return res.status(400).json({ error: "Missing username query parameter" });
+
+  try {
+    const data = await getSkillStats(username);
+    res.json({ data });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Error while fetching data for /skillStats");
   }
 });
 

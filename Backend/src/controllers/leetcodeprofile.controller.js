@@ -8,6 +8,7 @@ import {
   recentAcSubmissionsQuery,
   getStreakCounterQuery,
   pastContestsQuery,
+  skillStatsQuery,
 } from "../queries/query.js";
 
 import { handleRequest } from "../httpRequests/request.js";
@@ -86,6 +87,11 @@ const getPastContests = async (pageNo = 1, numPerPage = 10) => {
   }
 };
 
+const getSkillStats = async (username) => {
+  const data = await handleRequest(skillStatsQuery, { username });
+  return data.matchedUser;
+};
+
 export {
   getLeetCodeStats,
   getPublicProfile,
@@ -96,5 +102,6 @@ export {
   getRecentAcSubmissions,
   getStreakCounter,
   getPastContests,
+  getSkillStats,
 };
 
