@@ -125,6 +125,9 @@ export default function Navbar() {
                     <NavLink to="/statistics" currentPath={pathname} mobile>
                       Statistics
                     </NavLink>
+                    <NavLink to="/blogs" currentPath={pathname}>
+                      Blogs
+                    </NavLink>
                     <NavLink to="/profile" currentPath={pathname} mobile>
                       Profile
                     </NavLink>
@@ -163,6 +166,9 @@ export default function Navbar() {
             </NavLink>
             <NavLink to="/statistics" currentPath={pathname}>
               Statistics
+            </NavLink>
+            <NavLink to="/blogs" currentPath={pathname}>
+              Blogs
             </NavLink>
             <NavLink to="/profile" currentPath={pathname}>
               Profile

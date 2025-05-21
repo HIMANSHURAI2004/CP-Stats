@@ -1,16 +1,13 @@
-"use client"
-
-import { User, Mail, Award, Code, Terminal } from "lucide-react"
+import { User, Mail, Award, Code, Terminal, MoveRight, ChevronsLeftRight } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
 import Navbar from "../components/navbar"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 
 // Sample user data
 const userData = {
-  name: "Himanshu Rai",
-  email: "himanshu@gmail.com",
   platforms: [
     {
       name: "LeetCode",
@@ -49,30 +46,38 @@ export default function ProfilePage() {
   const [userDetails,setUserDetails] = useState({});
   const [name,setName]=useState("")
   const getUserDetails = async () => {
-    try {
       const response = await axios.get("http://localhost:3000/api/v1/user/get-user", { withCredentials: true })
-      
-      if (response.status === 200) {
-        const userData = response?.data?.data;
-        setUserDetails(userData);
-        setName(userData.name)
+      return response.data;
+      // if (response.status === 200) {
+      //   const userData = response?.data?.data;
+      //   setUserDetails(userData);
+      //   setName(userData.name)
           
-        // console.log("User data:", userData);
-        // Set user data in state or context as needed
-      } else {
-        console.error("Failed to fetch user details:", response.data);
-      }
-
-      
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    } 
+      //   // console.log("User data:", userData);
+      //   // Set user data in state or context as needed
+      // } else {
+      //   console.error("Failed to fetch user details:", response.data);
+      // }
   }
 
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["userDetails"],
+    queryFn: getUserDetails,
+  });
+
   useEffect(() =>{
-    getUserDetails();
-    
-  },[userDetails])
+    setUserDetails(data?.data);
+    setName(data?.data?.name)    
+  },[data])
+
+  if (isLoading) {
+    return <div className="text-white text-center py-10">Loading...</div>;
+  }
+
+  if (isError) {
+    return <div className="text-white text-center py-10">Error: {error.message}</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
       <Navbar />
@@ -88,41 +93,67 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold mb-8 text-white">My Profile</h1>
 
           {/* User Profile Card */}
-          <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm mb-8 overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-white text-2xl">Profile Information</CardTitle>
-              <CardDescription className="text-gray-400">Your personal details and coding statistics</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="flex-shrink-0">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
-                    {name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium text-gray-400">Full Name</div>
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-indigo-400" />
-                      <span className="text-white">{userDetails.name}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm mb-8 overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-white text-2xl">Profile Information</CardTitle>
+                <CardDescription className="text-gray-400">Your personal details and coding statistics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
+                      {name ? name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("") : ""}
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium text-gray-400">Email Address</div>
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-indigo-400" />
-                      <span className="text-white">{userDetails.email}</span>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-gray-400">Full Name</div>
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-indigo-400" />
+                        <span className="text-white">{userDetails?.name}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-gray-400">Email Address</div>
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-indigo-400" />
+                        <span className="text-white">{userDetails?.email}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
+              </CardContent>
+            </Card>
+            <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm mb-8 overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-white text-2xl">Platform Username</CardTitle>
+                  <CardDescription className="text-gray-400">Your usernames on various coding platforms</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className=" flex flex-col items-start justify-between gap-y-4">
+                    <div className="flex justify-evenly gap-x-12">
+                      <div className=" font-medium text-gray-400">LeetCode</div>
+                      <ChevronsLeftRight className="text-indigo-400 text-sm" />
+                      <span className="text-white">{userDetails?.leetcodeUsername}</span>
+                    </div>
+                    <div className="flex justify-evenly gap-x-9">
+                      <div className=" font-medium text-gray-400">Codeforces</div>
+                      <ChevronsLeftRight className="text-indigo-400 text-sm" />
+                        <span className="text-white">{userDetails?.codeforcesUsername}</span>
+                    </div>
+                    <div className="flex justify-evenly gap-x-14">
+                      <div className="text-sm font-medium text-gray-400">Codechef  </div>
+                      <ChevronsLeftRight className="text-indigo-400 text-sm" />
+                        <span className="text-white">{userDetails?.codechefUsername}</span>
+                    </div>
+                  </div>
+                </CardContent>
+            </Card>          
+          </div>
           {/* Platform Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {userData.platforms.map((platform, index) => {

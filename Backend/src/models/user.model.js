@@ -23,6 +23,15 @@ const userSchema = new Schema({
     college: {
         type: String,
     },
+    leetcodeUsername: {
+        type: String,
+    },
+    codeforcesUsername: {
+        type: String,
+    },
+    codechefUsername: {
+        type: String,
+    },
     verificationToken: String,
     verificationTokenExpiresAt: Date,
 },
