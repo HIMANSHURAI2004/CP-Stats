@@ -1,21 +1,7 @@
 import axios from 'axios';
+import { handleCodeforcesRequest } from '../httpRequests/request.js';
 
-// Base URL for Codeforces API
-const CODEFORCES_API_BASE = 'https://codeforces.com/api';
 
-// Helper function to handle API requests
-const handleCodeforcesRequest = async (endpoint, params = {}) => {
-  try {
-    const response = await axios.get(`${CODEFORCES_API_BASE}/${endpoint}`, { params });
-    if (response.data.status === 'OK') {
-      return response.data.result;
-    }
-    throw new Error(response.data.comment || 'Failed to fetch data from Codeforces');
-  } catch (error) {
-    console.error('Codeforces API Error:', error);
-    throw error;
-  }
-};
 
 // Get user info
 const getUserInfo = async (handles) => {
