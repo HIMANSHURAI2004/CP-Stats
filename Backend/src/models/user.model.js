@@ -29,9 +29,6 @@ const userSchema = new Schema({
     codeforcesUsername: {
         type: String,
     },
-    codechefUsername: {
-        type: String,
-    },
     verificationToken: String,
     verificationTokenExpiresAt: Date,
 },

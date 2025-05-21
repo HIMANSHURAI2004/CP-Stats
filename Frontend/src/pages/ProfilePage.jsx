@@ -2,9 +2,8 @@ import { User, Mail, Award, Code, Terminal, MoveRight, ChevronsLeftRight } from 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
 import Navbar from "../components/navbar"
-import axios from "axios"
 import { useEffect, useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useUserDetails } from "../hooks/userDetails"
 
 // Sample user data
 const userData = {
@@ -45,25 +44,7 @@ const userData = {
 export default function ProfilePage() {
   const [userDetails,setUserDetails] = useState({});
   const [name,setName]=useState("")
-  const getUserDetails = async () => {
-      const response = await axios.get("http://localhost:3000/api/v1/user/get-user", { withCredentials: true })
-      return response.data;
-      // if (response.status === 200) {
-      //   const userData = response?.data?.data;
-      //   setUserDetails(userData);
-      //   setName(userData.name)
-          
-      //   // console.log("User data:", userData);
-      //   // Set user data in state or context as needed
-      // } else {
-      //   console.error("Failed to fetch user details:", response.data);
-      // }
-  }
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["userDetails"],
-    queryFn: getUserDetails,
-  });
+  const { data, isLoading, isError, error } = useUserDetails()
 
   useEffect(() =>{
     setUserDetails(data?.data);
@@ -144,11 +125,6 @@ export default function ProfilePage() {
                       <div className=" font-medium text-gray-400">Codeforces</div>
                       <ChevronsLeftRight className="text-indigo-400 text-sm" />
                         <span className="text-white">{userDetails?.codeforcesUsername}</span>
-                    </div>
-                    <div className="flex justify-evenly gap-x-14">
-                      <div className="text-sm font-medium text-gray-400">Codechef  </div>
-                      <ChevronsLeftRight className="text-indigo-400 text-sm" />
-                        <span className="text-white">{userDetails?.codechefUsername}</span>
                     </div>
                   </div>
                 </CardContent>
