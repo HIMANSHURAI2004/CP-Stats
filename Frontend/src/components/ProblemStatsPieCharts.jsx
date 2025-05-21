@@ -5,22 +5,6 @@ import { useQuery } from "@tanstack/react-query"
 
 const COLORS = ["#34d399", "#60a5fa", "#f472b6", "#fcd34d"]
 
-// const data = {
-//   problemsSolvedBeatsStats: [
-//     { difficulty: "Easy", percentage: 99.48 },
-//     { difficulty: "Medium", percentage: 98.8 },
-//     { difficulty: "Hard", percentage: 91.56 },
-//   ],
-//   submitStatsGlobal: {
-//     acSubmissionNum: [
-//       { difficulty: "All", count: 808 },
-//       { difficulty: "Easy", count: 321 },
-//       { difficulty: "Medium", count: 438 },
-//       { difficulty: "Hard", count: 49 },
-//     ],
-//   },
-// }
-
 export default function ProblemStatsPieCharts({leetcodeUsername}) {
 
   const fetchLeetcodeProblemStats = async () => {
