@@ -6,6 +6,9 @@ import LanguageStatsCard from '../components/languageStatsChart'
 import ProblemStatsPieCharts from '../components/ProblemStatsPieCharts'
 import ContestRatingLineChart from '../components/ContestRatingLineChart'
 import BadgeDisplayCard from '../components/BadgeDisplayCard'
+import UserSkillCardLeetcode from '../components/UserSkillCardLeetcode'
+import CodeforcesRatingChart from '../components/CodeforcesRatingChart'
+import CodeforcesStats from '../components/CodeforcesStats'
 
 function StatisticsPage() {
   const { data, isLoading, isError, error } = useUserDetails()
@@ -27,7 +30,7 @@ function StatisticsPage() {
     )
   }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins] pb-10">
       <Navbar />
         {/* Glow effects */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -37,7 +40,7 @@ function StatisticsPage() {
 
           <h1 className="text-3xl font-bold m-8 text-white">Coding Statistics</h1>
       <div>
-        <Card className="bg-gray-900/50 backdrop-blur-sm border-gray-800 shadow-lg shadow-indigo-500/5 mx-16 mt-10 p-5 ">
+        <Card className="bg-gray-900/50 backdrop-blur-sm border-gray-800 shadow-lg shadow-indigo-500/5 mx-10 md:mx-24 mt-10 p-5 ">
           <CardHeader className="">
             <h2 className="text-2xl font-bold text-white">Leetcode Stats</h2>
             <p className="text-gray-400 mt-2">Your Leetcode coding statistics will be displayed here.</p>
@@ -47,6 +50,17 @@ function StatisticsPage() {
             <ProblemStatsPieCharts leetcodeUsername={leetcodeUsername}/>
             <ContestRatingLineChart leetcodeUsername={leetcodeUsername}/>
             <BadgeDisplayCard leetcodeUsername={leetcodeUsername}/>
+            <UserSkillCardLeetcode leetcodeUsername={leetcodeUsername}/>
+          </CardContent>
+        </Card>
+        <Card className="bg-gray-900/50 backdrop-blur-sm border-gray-800 shadow-lg shadow-indigo-500/5 mx-10 md:mx-24 mt-10 p-5 ">
+          <CardHeader className="">
+            <h2 className="text-2xl font-bold text-white">Codeforces Stats</h2>
+            <p className="text-gray-400 mt-2">Your Codeforces coding statistics will be displayed here.</p>
+          </CardHeader>
+          <CardContent className="text-white">
+            <CodeforcesRatingChart codeforcesUsername={codeforcesUsername}/>
+            <CodeforcesStats codeforcesUsername={codeforcesUsername}/>
           </CardContent>
         </Card>
       </div>

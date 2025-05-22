@@ -211,13 +211,13 @@ export default function ContestsPage() {
 
           {/* Tabs for contest status */}
           <Tabs defaultValue="upcoming" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-gray-900/50 border border-gray-800">
+            <TabsList className="grid w-full grid-cols-2 bg-gray-900/50 border border-gray-800">
               <TabsTrigger value="past" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-gray-400">
                 Past Contests
               </TabsTrigger>
-              <TabsTrigger value="ongoing" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-gray-400">
-                Ongoing Contests
-              </TabsTrigger>
+              {/* <TabsTrigger value="ongoing" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-gray-400"> */}
+                {/* Ongoing Contests */}
+              {/* </TabsTrigger> */}
               <TabsTrigger
                 value="upcoming"
                 className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-gray-400"
@@ -227,7 +227,9 @@ export default function ContestsPage() {
             </TabsList>
 
             {/* Tab content */}
-            {["past", "ongoing", "upcoming"].map((status) => (
+            {/* {["past", "ongoing", "upcoming"].map((status) => ( */}
+            {["past", "upcoming"].map((status) => (
+
               <TabsContent key={status} value={status} className="mt-6">
                 {filteredContests?.length === 0 ? (
                   <div className="text-center py-12">

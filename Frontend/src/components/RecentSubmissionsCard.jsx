@@ -78,12 +78,12 @@ const RecentSubmissionsCard = ({leetcodeUsername}) => {
                 {getTimeAgo(sub.timestamp)}
               </div>
               <a
-                href={`https://leetcode.com/submissions/detail/${sub.id}/`}
+                href={`https://leetcode.com/problems/${sub.titleSlug}/description/`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <button className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm px-3 py-2 rounded-md">
-                  View Submission
+                  View Problem
                 </button>
               </a>
             </div>

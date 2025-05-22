@@ -61,8 +61,9 @@ const RecentSubmissionCodeforces = ({codeforcesUsername}) => {
       <CardContent>
         <div className="space-y-6">
           {submissions.map((sub) => {
-            const { problem, programmingLanguage, verdict, passedTestCount, timeConsumedMillis, memoryConsumedBytes } = sub;
+            const { problem, programmingLanguage,contestId, verdict, passedTestCount, timeConsumedMillis, memoryConsumedBytes } = sub;
 
+            const problemUrl = `https://codeforces.com/problemset/problem/${contestId}/${problem.index}`;
             return (
               <div
                 key={sub.id}
@@ -73,9 +74,14 @@ const RecentSubmissionCodeforces = ({codeforcesUsername}) => {
                   <div className="text-left text-base font-medium">
                     {problem.index}. {problem.name}
                   </div>
-                  <div className="text-sm text-yellow-400">
-                    Rating: {problem.rating || "N/A"}
-                  </div>
+                  <a
+                      href={problemUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-3 py-1.5 rounded-md transition"
+                    >
+                      View Problem
+                    </a>
                 </div>
 
                 {/* Tags */}
@@ -115,6 +121,9 @@ const RecentSubmissionCodeforces = ({codeforcesUsername}) => {
                   <div>
                     <span className="text-gray-400">Memory:</span>{" "}
                     {formatBytes(memoryConsumedBytes)}
+                  </div>
+                  <div className="text-sm text-yellow-400">
+                    Rating: {problem.rating || "N/A"}
                   </div>
                 </div>
               </div>

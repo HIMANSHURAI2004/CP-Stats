@@ -52,7 +52,7 @@ export default function ContestRatingLineChart({leetcodeUsername}) {
     date: formatUnixToDate(contest.contest.startTime),
   }))
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const contest = payload[0].payload
       return (
