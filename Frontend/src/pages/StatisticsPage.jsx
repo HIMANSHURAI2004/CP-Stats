@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from '../components/ui/card'
 import Navbar from '../components/Navbar'
-import React, { useEffect }, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { useUserDetails } from '../hooks/userDetails'
 import LanguageStatsCard from '../components/languageStatsChart'
 import ProblemStatsPieCharts from '../components/ProblemStatsPieCharts'
