@@ -56,7 +56,6 @@ const getStreakCounter = async () => {
 const getPastContests = async (pageNo = 1, numPerPage = 10) => {
   try {
     const data = await handleRequest(pastContestsQuery, { pageNo, numPerPage });
-    console.log("LeetCode API Response:", data); // Debug log
     
     if (!data || !data.pastContests) {
       throw new Error("Invalid response format from LeetCode API");

@@ -108,7 +108,7 @@ const platforms = [
 export default function ContestsPage() {
   const [activeTab, setActiveTab] = useState("upcoming")
   const [selectedPlatforms, setSelectedPlatforms] = useState(["all"])
-  const [filteredContests, setFilteredContests] = useState(contestsData)
+  const [filteredContests, setFilteredContests] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
 
@@ -129,11 +129,17 @@ export default function ContestsPage() {
   const { data: upcomingData, isLoading: upcomingLoading, isError: upcomingError, error: upcomingErrorMsg } = useQuery({
     queryKey: ["upcomingContests"],
     queryFn: fetchUpcomingContests,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   })
 
   const { data: pastData, isLoading: pastLoading, isError: pastError, error: pastErrorMsg } = useQuery({
     queryKey: ["pastContests", currentPage, perPage],
     queryFn: fetchPastContests,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   })
 
   useEffect(() => {
@@ -199,9 +205,12 @@ export default function ContestsPage() {
                     id={platform.id}
                     checked={selectedPlatforms.includes(platform.id)}
                     onCheckedChange={() => handlePlatformChange(platform.id)}
-                    className="border-gray-700 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600"
+                    className="border-gray-600 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600"
                   />
-                  <Label htmlFor={platform.id} className="text-gray-300 cursor-pointer">
+                  <Label
+                    htmlFor={platform.id}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-300"
+                  >
                     {platform.label}
                   </Label>
                 </div>
@@ -209,72 +218,70 @@ export default function ContestsPage() {
             </div>
           </div>
 
-          {/* Tabs for contest status */}
-          <Tabs defaultValue="upcoming" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-gray-900/50 border border-gray-800">
-              <TabsTrigger value="past" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-gray-400">
-                Past Contests
-              </TabsTrigger>
-              {/* <TabsTrigger value="ongoing" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-gray-400"> */}
-                {/* Ongoing Contests */}
-              {/* </TabsTrigger> */}
+          {/* Tabs */}
+          <Tabs defaultValue="upcoming" className="w-full" onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3 bg-gray-900/50 backdrop-blur-sm border border-gray-800">
               <TabsTrigger
                 value="upcoming"
-                className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-gray-400"
+                className="data-[state=active]:bg-violet-600 data-[state=active]:text-white text-gray-400"
               >
-                Upcoming Contests
+                Upcoming
+              </TabsTrigger>
+              <TabsTrigger
+                value="ongoing"
+                className="data-[state=active]:bg-violet-600 data-[state=active]:text-white text-gray-400"
+              >
+                Ongoing
+              </TabsTrigger>
+              <TabsTrigger
+                value="past"
+                className="data-[state=active]:bg-violet-600 data-[state=active]:text-white text-gray-400"
+              >
+                Past
               </TabsTrigger>
             </TabsList>
 
-            {/* Tab content */}
-            {/* {["past", "ongoing", "upcoming"].map((status) => ( */}
-            {["past", "upcoming"].map((status) => (
+            <TabsContent value="upcoming" className="mt-6">
+              {upcomingLoading ? (
+                <div className="flex items-center justify-center min-h-[200px]">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-600 border-t-transparent"></div>
+                </div>
+              ) : upcomingError ? (
+                <div className="text-red-400 text-center py-10">
+                  Error: {upcomingErrorMsg?.message}
+                </div>
+              ) : (
+                <UpcomingContests contests={filteredContests} />
+              )}
+            </TabsContent>
 
-              <TabsContent key={status} value={status} className="mt-6">
-                {filteredContests?.length === 0 ? (
-                  <div className="text-center py-12">
-                    <p className="text-gray-400">No {status} contests found for the selected platforms.</p>
-                  </div>
-                ) : (
-                  <div>
-                    {status === "upcoming" && (
-                      <UpcomingContests contest={filteredContests} />
-                    )}
-                    {status === "ongoing" && (
-                      <OngoingContest contest={filteredContests} />
-                    )}
-                    {status === "past" && (
-                      <>
-                        <PastContest contest={filteredContests} />
-                        {pastData?.data?.pagination && (
-                          <div className="flex justify-center items-center gap-4 mt-6">
-                            <Button
-                              variant="outline"
-                              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                              disabled={currentPage === 1}
-                              className="border-gray-700 hover:bg-gray-800 hover:text-white"
-                            >
-                              Previous
-                            </Button>
-                            <span className="text-gray-400">
-                              Page {currentPage} of {Math.ceil(pastData.data.pagination.totalNum / perPage)}
-                            </span>
-                            <Button
-                              variant="outline"
-                              onClick={() => setCurrentPage(prev => prev + 1)}
-                              disabled={currentPage >= Math.ceil(pastData.data.pagination.totalNum / perPage)}
-                              className="border-gray-700 hover:bg-gray-800 hover:text-white"
-                            >
-                              Next
-                            </Button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-              </TabsContent>
-            ))}
+            <TabsContent value="ongoing" className="mt-6">
+              {upcomingLoading ? (
+                <div className="flex items-center justify-center min-h-[200px]">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-600 border-t-transparent"></div>
+                </div>
+              ) : upcomingError ? (
+                <div className="text-red-400 text-center py-10">
+                  Error: {upcomingErrorMsg?.message}
+                </div>
+              ) : (
+                <OngoingContest contests={filteredContests} />
+              )}
+            </TabsContent>
+
+            <TabsContent value="past" className="mt-6">
+              {pastLoading ? (
+                <div className="flex items-center justify-center min-h-[200px]">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-600 border-t-transparent"></div>
+                </div>
+              ) : pastError ? (
+                <div className="text-red-400 text-center py-10">
+                  Error: {pastErrorMsg?.message}
+                </div>
+              ) : (
+                <PastContest contests={filteredContests} />
+              )}
+            </TabsContent>
           </Tabs>
         </div>
       </main>

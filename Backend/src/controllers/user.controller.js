@@ -5,18 +5,31 @@ dotenv.config();
 
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-const generateAccessAndRefreshTokens = async (userId) => {
+const generateAccessAndRefreshTokens = (userData) => {
     try {
-        const user = await User.findById(userId);
+        const accessToken = jwt.sign(
+            {
+                name: userData.name,
+                leetcodeUsername: userData.leetcodeUsername,
+                codeforcesUsername: userData.codeforcesUsername
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            {
+                expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+            }
+        );
 
-        const accessToken = await user.generateAccessToken();
-        const refreshToken = await user.generateRefreshToken();
-
-        user.refreshToken = refreshToken;
-        await user.save({ validateBeforeSave: false });
+        const refreshToken = jwt.sign(
+            {
+                name: userData.name
+            },
+            process.env.REFRESH_TOKEN_SECRET,
+            {
+                expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+            }
+        );
 
         return { accessToken, refreshToken };
     } catch (error) {
@@ -34,68 +47,65 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Name is required");
     }
 
-    const user = await User.create({
+    const userData = {
         name,
         leetcodeUsername,
         codeforcesUsername
-    });
-
-    const createdUser = await User.findById(user._id);
-    if (!createdUser) {
-        throw new ApiError(500, "Failed to create User");
-    }
+    };
 
     // Generate tokens
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+    const { accessToken, refreshToken } = generateAccessAndRefreshTokens(userData);
 
     // Set cookie options
     const cookieOptions = {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     };
 
     return res
         .status(201)
         .cookie("accessToken", accessToken, cookieOptions)
         .cookie("refreshToken", refreshToken, cookieOptions)
+        .cookie("name", name, cookieOptions)
         .cookie("leetcodeUsername", leetcodeUsername, cookieOptions)
         .cookie("codeforcesUsername", codeforcesUsername, cookieOptions)
         .json(
             new ApiResponse(
                 201,
-                createdUser,
+                userData,
                 "User Registered Successfully"
             )
         );
-})
+});
 
-const logoutUser = asyncHandler(async (req, res) => {
-    const user_id = req.user._id;
+const getCurrentUser = asyncHandler(async (req, res) => {
+    // Check if we have the required cookies
+    const name = req.cookies.name;
+    const leetcodeUsername = req.cookies.leetcodeUsername;
+    const codeforcesUsername = req.cookies.codeforcesUsername;
 
-    await User.findByIdAndUpdate(
-        user_id,
-        {
-            $unset: {
-                refreshToken: 1,
-            },
-        },
-        {
-            new: true,
-        }
-    );
+    if (!name) {
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, {}, "No user data found")
+            );
+    }
 
-    const cookieOptions = {
-        httpOnly: true,
-        secure: true
+    const userData = {
+        name,
+        leetcodeUsername,
+        codeforcesUsername
     };
 
     return res
         .status(200)
-        .clearCookie("accessToken", cookieOptions)
-        .clearCookie("refreshToken", cookieOptions)
-        .clearCookie("leetcodeUsername", cookieOptions)
-        .clearCookie("codeforcesUsername", cookieOptions)
-        .json(new ApiResponse(200, {}, "User logged out successfully"));
+        .json(
+            new ApiResponse(200, userData, "Current User Fetched Successfully")
+        );
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -105,47 +115,63 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Unauthorized request");
     }
 
-    const decodedToken = jwt.verify(
-        incomingRefreshToken,
-        process.env.REFRESH_TOKEN_SECRET
-    );
+    try {
+        const decodedToken = jwt.verify(
+            incomingRefreshToken,
+            process.env.REFRESH_TOKEN_SECRET
+        );
 
-    const user = await User.findById(decodedToken?._id);
+        const userData = {
+            name: decodedToken.name,
+            leetcodeUsername: req.cookies.leetcodeUsername,
+            codeforcesUsername: req.cookies.codeforcesUsername
+        };
 
-    if (!user) {
+        const tokens = generateAccessAndRefreshTokens(userData);
+
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            path: "/",
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        };
+
+        return res
+            .status(200)
+            .cookie("accessToken", tokens.accessToken, cookieOptions)
+            .cookie("refreshToken", tokens.refreshToken, cookieOptions)
+            .json(new ApiResponse(200, { userData, ...tokens }, "Access Token Refreshed"));
+    } catch (error) {
         throw new ApiError(401, "Invalid Refresh Token");
     }
-
-    if (incomingRefreshToken !== user?.refreshToken) {
-        throw new ApiError(401, "Refresh Token is expired or used");
-    }
-
-    const cookieOptions = {
-        httpOnly: true,
-        secure: true,
-    };
-
-    const tokens = await generateAccessAndRefreshTokens(user._id);
-
-    return res
-        .status(200)
-        .cookie("accessToken", tokens.accessToken, cookieOptions)
-        .cookie("refreshToken", tokens.refreshToken, cookieOptions)
-        .json(new ApiResponse(200, { user, ...tokens }, "Access Token Refreshed"));
 });
 
-const getCurrentUser = asyncHandler(async (req, res) => {
-    const currentUser = req.user;
+const logoutUser = asyncHandler(async (req, res) => {
+    // Clear all user-related cookies
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        expires: new Date(0) // Set expiration to past date to clear cookie
+    };
+
     return res
         .status(200)
+        .clearCookie("accessToken", cookieOptions)
+        .clearCookie("refreshToken", cookieOptions)
+        .clearCookie("name", cookieOptions)
+        .clearCookie("leetcodeUsername", cookieOptions)
+        .clearCookie("codeforcesUsername", cookieOptions)
         .json(
-            new ApiResponse(200, currentUser, "Current User Fetched Successfully")
+            new ApiResponse(200, {}, "User logged out successfully")
         );
 });
 
 export {
     registerUser,
-    logoutUser,
     refreshAccessToken,
     getCurrentUser,
+    logoutUser
 };

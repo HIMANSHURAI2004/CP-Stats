@@ -13,7 +13,9 @@ export const useUserDetails = () => {
   return useQuery({
     queryKey: ["userDetails"],
     queryFn: getUserDetails,
-    staleTime: Infinity, // don't refetch unless explicitly needed
-    cacheTime: Infinity, // keep data in memory forever until browser/tab refresh
+    staleTime: 0, // Consider data stale immediately
+    refetchOnMount: true, // Refetch when component mounts
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    refetchOnReconnect: true, // Refetch when reconnecting
   })
 }

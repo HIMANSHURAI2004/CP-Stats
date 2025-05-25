@@ -6,7 +6,4 @@ const router = Router()
 
 router.route("/upcomingContests").get(getUpcomingContests);
 
-
-
-
 export default router
