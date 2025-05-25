@@ -34,7 +34,7 @@ export default function ProblemStatsPieCharts({leetcodeUsername}) {
       value: item.count,
     }))
 
-  if (isLoading) return <p>Loading...</p>
+  // if (isLoading) return <p>Loading...</p>
   
     if(isError) {
       return (

@@ -28,13 +28,13 @@ const UserSkillCardLeetcode = ({leetcodeUsername}) => {
       <Badge
         key={index}
         variant="secondary"
-        className="text-xs px-3 py-1 rounded-xl whitespace-nowrap"
+        className="text-xs bg-blue-100/80 px-3 py-1 rounded-xl whitespace-nowrap"
       >
         {skill.tagName} — {skill.problemsSolved}
       </Badge>
     ));
 
-    if (isLoading) return <p>Loading...</p>
+    // if (isLoading) return <p>Loading...</p>
   
     if(isError) {
       return (

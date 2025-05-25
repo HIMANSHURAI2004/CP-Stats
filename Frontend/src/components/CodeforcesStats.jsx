@@ -34,7 +34,7 @@ export default function CodeforcesStats({ codeforcesUsername }) {
     queryFn: fetchCodeforcesStats,
   })
 
-  if (isLoading) return <p>Loading...</p>
+  // if (isLoading) return <p>Loading...</p>
   if (isError)
     return (
       <div className="text-red-500 text-center py-5">
@@ -43,8 +43,8 @@ export default function CodeforcesStats({ codeforcesUsername }) {
     )
 
   const user = data?.data
-  const problemTags = user.problemTags || {}
-  const problemRatings = user.problemRatings || {}
+  const problemTags = user?.problemTags || {}
+  const problemRatings = user?.problemRatings || {}
 
   const ratingChartData = Object.entries(problemRatings).map(([rating, solved]) => ({
     rating,
@@ -57,27 +57,27 @@ export default function CodeforcesStats({ codeforcesUsername }) {
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-white">
           <div className="bg-gray-800 rounded-lg p-4 shadow">
             <p className="text-sm text-green-600">Rating</p>
-            <p className="text-lg font-semibold">{user.rating}</p>
+            <p className="text-lg font-semibold">{user?.rating}</p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 shadow">
             <p className="text-sm text-green-600">Max Rating</p>
-            <p className="text-lg font-semibold">{user.maxRating}</p>
+            <p className="text-lg font-semibold">{user?.maxRating}</p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 shadow">
             <p className="text-sm text-gray-400">Solved Problems</p>
-            <p className="text-lg font-semibold">{user.solvedProblems}</p>
+            <p className="text-lg font-semibold">{user?.solvedProblems}</p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 shadow">
             <p className="text-sm text-amber-400">Rank</p>
-            <p className="text-lg font-semibold capitalize ">{user.rank}</p>
+            <p className="text-lg font-semibold capitalize ">{user?.rank}</p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 shadow">
             <p className="text-sm text-amber-400">Max Rank</p>
-            <p className="text-lg font-semibold capitalize">{user.maxRank}</p>
+            <p className="text-lg font-semibold capitalize">{user?.maxRank}</p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 shadow">
             <p className="text-sm text-gray-400">Contribution</p>
-            <p className="text-lg font-semibold">{user.contribution}</p>
+            <p className="text-lg font-semibold">{user?.contribution}</p>
           </div>
         </CardContent>
       </Card>

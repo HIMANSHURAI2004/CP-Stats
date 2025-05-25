@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from '../components/ui/card'
 import Navbar from '../components/Navbar'
-import React, { useEffect } from 'react'
+import React, { useEffect }, { useState } from 'react'
 import { useUserDetails } from '../hooks/userDetails'
 import LanguageStatsCard from '../components/languageStatsChart'
 import ProblemStatsPieCharts from '../components/ProblemStatsPieCharts'
@@ -100,7 +100,7 @@ function StatisticsPage() {
             <p className="text-gray-400 mt-2">Your Leetcode coding statistics will be displayed here.</p>
           </CardHeader>
           <CardContent className="text-white">
-            <LanguageStatsCard leetcodeUsername={leetcodeUsername}/>
+            <LanguageStatsCard leetcodeUsername={leetcodeUsername} />
             <ProblemStatsPieCharts leetcodeUsername={leetcodeUsername}/>
             <ContestRatingLineChart leetcodeUsername={leetcodeUsername}/>
             <BadgeDisplayCard leetcodeUsername={leetcodeUsername}/>

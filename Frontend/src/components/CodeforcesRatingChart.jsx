@@ -67,7 +67,7 @@ export default function CodeforcesRatingLineChart({ codeforcesUsername }) {
     return null;
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  // if (isLoading) return <p>Loading...</p>;
 
   if (isError) {
     return (

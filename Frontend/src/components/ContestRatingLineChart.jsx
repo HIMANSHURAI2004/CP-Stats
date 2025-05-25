@@ -69,7 +69,7 @@ export default function ContestRatingLineChart({leetcodeUsername}) {
     return null
   }
 
-  if (isLoading) return <p>Loading...</p>
+  // if (isLoading) return <p>Loading...</p>
   
     if(isError) {
       return (

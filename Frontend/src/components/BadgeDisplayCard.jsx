@@ -36,7 +36,7 @@ const BadgeDisplayCard = ({leetcodeUsername}) => {
 
   const badges = data?.data?.badges || [];
   
-    if (isLoading) return <p>Loading...</p>
+    // if (isLoading) return <p>Loading...</p>
   
     if(isError) {
       return (
