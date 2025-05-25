@@ -28,35 +28,38 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { email, password, name } = req.body;
-
-    if (!email) {
-        throw new ApiError(400, "Email is required");
-    }
+    const { name, leetcodeUsername, codeforcesUsername } = req.body;
 
     if (!name) {
         throw new ApiError(400, "Name is required");
     }
 
-    if (!password) {
-        throw new ApiError(400, "Password is required");
-    }
-
     const user = await User.create({
         name,
-        email,
-        password
+        leetcodeUsername,
+        codeforcesUsername
     });
 
-    const createdUser = await User.findById(user._id).select(
-        "-password -refreshToken"
-    );
+    const createdUser = await User.findById(user._id);
     if (!createdUser) {
         throw new ApiError(500, "Failed to create User");
     }
 
+    // Generate tokens
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+    // Set cookie options
+    const cookieOptions = {
+        httpOnly: true,
+        secure: true,
+    };
+
     return res
         .status(201)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
+        .cookie("leetcodeUsername", leetcodeUsername, cookieOptions)
+        .cookie("codeforcesUsername", codeforcesUsername, cookieOptions)
         .json(
             new ApiResponse(
                 201,
@@ -66,73 +69,14 @@ const registerUser = asyncHandler(async (req, res) => {
         );
 })
 
-const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email) {
-        throw new ApiError(400, "Email is required");
-    }
-
-    const user = await User.findOne({
-        email
-    });
-
-    if (!user) {
-        throw new ApiError(404, "Invalid Email or Password");
-    }
-
-    // check if password is correct
-    const isPasswordCorrect = await user.isPasswordCorrect(password);
-
-    if (!isPasswordCorrect) {
-        throw new ApiError(401, "Invalid credentials");
-    }
-
-    // generate and refresh and access token
-    const { accessToken, refreshToken: refreshToken } =
-        await generateAccessAndRefreshTokens(user._id);
-
-    const loggedInUser = await User.findOne(user._id).select(
-        "-password -refreshToken"
-    );
-
-    // set cookie options
-    const cookieOptions = {
-        httpOnly: true,
-        // secure: process.env.NODE_ENV === "production",
-        secure:true,
-        // sameSite: "lax",
-        // path: "/",
-    };
-
-    return res
-        .status(200)
-        .cookie("accessToken", accessToken, cookieOptions)
-        .cookie("refreshToken", refreshToken, cookieOptions)
-        .json(
-            new ApiResponse(
-                200,
-                {
-                    user: loggedInUser,
-                    accessToken,
-                    refreshToken,
-                },
-                "User logged in successfully"
-            )
-        );
-
-});
-
 const logoutUser = asyncHandler(async (req, res) => {
-    // get user id from the user in the request object (attached by the auth middleware)
     const user_id = req.user._id;
 
-    // remove refresh token from db (i.e. make it undefined)
     await User.findByIdAndUpdate(
         user_id,
         {
             $unset: {
-                refreshToken: 1, // passing the 1 flag unsets the refresh token
+                refreshToken: 1,
             },
         },
         {
@@ -140,44 +84,22 @@ const logoutUser = asyncHandler(async (req, res) => {
         }
     );
 
-    // set cookie options
     const cookieOptions = {
         httpOnly: true,
-        // secure: process.env.NODE_ENV !== "production",
         secure: true
     };
 
-    // return response
     return res
         .status(200)
         .clearCookie("accessToken", cookieOptions)
         .clearCookie("refreshToken", cookieOptions)
+        .clearCookie("leetcodeUsername", cookieOptions)
+        .clearCookie("codeforcesUsername", cookieOptions)
         .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
 
-const changeCurrentPassword = asyncHandler(async (req, res) => {
-    // get the new password & old password
-    const { oldPassword, newPassword } = req.body;
-
-    const user = await User.findById(req.user?._id);
-    const isOldPasswordCorrect = await user.isPasswordCorrect(oldPassword);
-
-    if (!isOldPasswordCorrect) {
-        throw new ApiError(400, "Invalid Old Password");
-    }
-
-    user.password = newPassword;
-    await user.save({ validateBeforeSave: false });
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {}, "Password Changed Successfully"));
-});
-
 const refreshAccessToken = asyncHandler(async (req, res) => {
-    // get refresh token from cookies
-    const incomingRefreshToken =
-        req.cookies.refreshToken || req.body.refreshToken;
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
     if (!incomingRefreshToken) {
         throw new ApiError(401, "Unauthorized request");
@@ -188,7 +110,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         process.env.REFRESH_TOKEN_SECRET
     );
 
-    const user = await User.findById(decodedToken?._id).select("-password");
+    const user = await User.findById(decodedToken?._id);
 
     if (!user) {
         throw new ApiError(401, "Invalid Refresh Token");
@@ -200,7 +122,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const cookieOptions = {
         httpOnly: true,
-        // secure: true,
+        secure: true,
     };
 
     const tokens = await generateAccessAndRefreshTokens(user._id);
@@ -223,9 +145,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 export {
     registerUser,
-    loginUser,
     logoutUser,
     refreshAccessToken,
     getCurrentUser,
-    changeCurrentPassword,
 };
