@@ -3,10 +3,12 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
 
-const PastContest = ({ contest }) => {
+const PastContest = ({ contests }) => {
+  console.log("Past contests data:", contests);
+  
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {contest?.map((item) => (
+      {contests?.map((item) => (
         <Card key={item.id} className="bg-gray-900/50 border-gray-800 backdrop-blur-sm">
           <CardHeader>
             <div className="flex items-center justify-between">

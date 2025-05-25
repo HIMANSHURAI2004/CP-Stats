@@ -1,39 +1,7 @@
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 import ContestCard from "./ContestCard";
-import { useEffect, useState } from "react";
 
-export default function UpcomingContests() {
-  const [upcomingContests, setUpcomingContests] = useState([]);
+export default function UpcomingContests({contests:upcomingContests}) {
 
-  const fetchUpcomingContests = async () => {
-    const response = await axios.get(
-      "http://localhost:3000/api/v1/contest/upcomingContests",
-      {
-        withCredentials: true,
-      }
-    );
-    return response.data;
-  };
-
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["upcomingContests"],
-    queryFn: fetchUpcomingContests,
-  });
-
-  useEffect(() => {
-    if (data?.data) {
-      setUpcomingContests(data.data);
-    }
-  }, [data]);
-
-  if (isLoading) {
-    return <div className="text-white text-center py-10">Loading...</div>;
-  }
-
-  if (isError) {
-    return <div className="text-white text-center py-10">Error: {error.message}</div>;
-  }
 
   return (
     <div className="w-full p-4">

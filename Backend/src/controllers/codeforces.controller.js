@@ -136,7 +136,7 @@ const getUserStats = async (handle) => {
 };
 
 // Get past contests
-const getPastContests = async (page = 1, perPage = 10) => {
+const getPastContests = async (page = 1, perPage = 5) => {
   try {
     const contests = await handleCodeforcesRequest('contest.list', { gym: false });
     
@@ -157,8 +157,6 @@ const getPastContests = async (page = 1, perPage = 10) => {
       id: contest.id,
       name: contest.name,
       type: contest.type,
-      phase: contest.phase,
-      frozen: contest.frozen,
       durationSeconds: contest.durationSeconds,
       startTimeSeconds: contest.startTimeSeconds,
       relativeTimeSeconds: contest.relativeTimeSeconds,
