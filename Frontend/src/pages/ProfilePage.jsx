@@ -16,6 +16,9 @@ import {
   DrawerTrigger,
 } from "../components/ui/drawer"
 import { Input } from "../components/ui/input"
+import axios from "axios"
+import { useQueryClient } from "@tanstack/react-query"
+import { toast, Toaster } from "sonner"
 
 // Sample user data
 const userData = {
@@ -55,21 +58,79 @@ const userData = {
 
 export default function ProfilePage() {
   const { data, isLoading, isError, error } = useUserDetails()
+  const queryClient = useQueryClient();
   
-  const userDetails =data?.data;
+  const userDetails = data?.data;
   const name = data?.data?.name;
   const [leetcodeUsername, setLeetcodeUsername] = useState(userDetails?.leetcodeUsername || "");
   const [codeforcesUsername, setCodeforcesUsername] = useState(userDetails?.codeforcesUsername || "");
+  const [isVerifying, setIsVerifying] = useState(false);
 
-  
+  // Store original values
+  const originalLeetcodeUsername = userDetails?.leetcodeUsername || "";
+  const originalCodeforcesUsername = userDetails?.codeforcesUsername || "";
 
-  //TODO: Implement the function to update platform usernames
+  // Function to reset input fields to original values
+  const resetInputFields = () => {
+    setLeetcodeUsername(originalLeetcodeUsername);
+    setCodeforcesUsername(originalCodeforcesUsername);
+  };
+
+  // Function to verify Codeforces handle
+  const verifyCodeforcesHandle = async (handle) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/v1/codeforces/user/info",
+        {
+          params: { handle },
+          withCredentials: true,
+        }
+      );
+      return response.data.status === 'OK';
+    } catch (error) {
+      return false;
+    }
+  };
+
   const handleUpdatePlatformUsername = async () => {
-    console.log("Updating platform usernames...");
-    
-    
-  }
+    try {
+      setIsVerifying(true);
 
+      // If Codeforces username is provided, verify it first
+      if (codeforcesUsername) {
+        const isValid = await verifyCodeforcesHandle(codeforcesUsername);
+        if (!isValid) {
+          toast.error("Invalid Codeforces handle. Please check and try again.");
+          resetInputFields();
+          setIsVerifying(false);
+          return;
+        }
+      }
+
+      // If verification passed or no Codeforces username provided, proceed with update
+      const response = await axios.post(
+        "http://localhost:3000/api/v1/user/update-profile",
+        {
+          leetcodeUsername,
+          codeforcesUsername,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.data.statusCode === 200) {
+        toast.success("Profile updated successfully");
+        // Invalidate and refetch user details
+        queryClient.invalidateQueries(["userDetails"]);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update profile");
+      resetInputFields();
+    } finally {
+      setIsVerifying(false);
+    }
+  };
 
   if (isLoading) {
     return <div className="text-white text-center py-10">Loading...</div>;
@@ -79,9 +140,41 @@ export default function ProfilePage() {
     return <div className="text-white text-center py-10">Error: {error.message}</div>;
   }
 
+  // If user is not logged in, show login prompt
+  if (!userDetails?.name) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
+        <Toaster position="top-right" richColors />
+        <Navbar />
+        <main className="container py-10 px-5">
+          <div className="relative">
+            {/* Glow effects */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-40 -right-20 h-60 w-60 rounded-full bg-purple-500/10 blur-3xl"></div>
+              <div className="absolute -bottom-20 -left-40 h-60 w-60 rounded-full bg-blue-500/10 blur-3xl"></div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+              <h1 className="text-3xl font-bold mb-4 text-white">Welcome to CP Stats</h1>
+              <p className="text-gray-400 mb-8 max-w-md">
+                Please log in to view your profile and track your coding progress across different platforms.
+              </p>
+              <Button 
+                className="bg-indigo-600 text-white hover:bg-indigo-700"
+                onClick={() => window.location.href = "/login"}
+              >
+                Go to Login
+              </Button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
+      <Toaster position="top-right" richColors />
       <Navbar />
 
       <main className="container py-10 px-5">
@@ -187,7 +280,13 @@ export default function ProfilePage() {
           </div>
         </div>
           <DrawerFooter>
-            <Button className="bg-indigo-600 my-2" onClick={handleUpdatePlatformUsername}>Submit</Button>
+            <Button 
+              className="bg-indigo-600 my-2" 
+              onClick={handleUpdatePlatformUsername}
+              disabled={isVerifying}
+            >
+              {isVerifying ? "Verifying..." : "Submit"}
+            </Button>
             <DrawerClose asChild>
               <Button variant="outline">Cancel</Button>
             </DrawerClose>

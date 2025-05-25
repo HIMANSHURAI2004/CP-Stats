@@ -169,9 +169,51 @@ const logoutUser = asyncHandler(async (req, res) => {
         );
 });
 
+const updateProfile = asyncHandler(async (req, res) => {
+    const { leetcodeUsername, codeforcesUsername } = req.body;
+    const name = req.cookies.name;
+
+    if (!name) {
+        throw new ApiError(401, "User not authenticated");
+    }
+
+    const userData = {
+        name,
+        leetcodeUsername,
+        codeforcesUsername
+    };
+
+    // Generate new tokens with updated data
+    const { accessToken, refreshToken } = generateAccessAndRefreshTokens(userData);
+
+    // Set cookie options
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    };
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
+        .cookie("leetcodeUsername", leetcodeUsername, cookieOptions)
+        .cookie("codeforcesUsername", codeforcesUsername, cookieOptions)
+        .json(
+            new ApiResponse(
+                200,
+                userData,
+                "Profile Updated Successfully"
+            )
+        );
+});
+
 export {
     registerUser,
     refreshAccessToken,
     getCurrentUser,
-    logoutUser
+    logoutUser,
+    updateProfile
 };
