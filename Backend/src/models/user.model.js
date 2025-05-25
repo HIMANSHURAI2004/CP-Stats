@@ -6,7 +6,6 @@ const userSchema = new Schema({
     name: {
         type: String,
         required: true,
-        unique: true,
     },
     email: {
         type: String,
@@ -25,9 +24,11 @@ const userSchema = new Schema({
     },
     leetcodeUsername: {
         type: String,
+        default: "",
     },
     codeforcesUsername: {
         type: String,
+        default: "",
     },
     verificationToken: String,
     verificationTokenExpiresAt: Date,

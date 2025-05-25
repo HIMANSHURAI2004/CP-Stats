@@ -24,7 +24,7 @@ export default function LanguageStatsCard({ leetcodeUsername }) {
     value: lang.problemsSolved,
   }))
 
-  if (isLoading) return <p>Loading...</p>
+  // if (isLoading) {return <p>Loading...</p>}
   
     if(isError) {
       return (

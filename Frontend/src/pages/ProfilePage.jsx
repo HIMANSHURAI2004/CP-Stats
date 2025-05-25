@@ -4,6 +4,18 @@ import { Progress } from "../components/ui/progress"
 import Navbar from "../components/navbar"
 import { useEffect, useState } from "react"
 import { useUserDetails } from "../hooks/userDetails"
+import { Button } from "../components/ui/button"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../components/ui/drawer"
+import { Input } from "../components/ui/input"
 
 // Sample user data
 const userData = {
@@ -42,14 +54,22 @@ const userData = {
 }
 
 export default function ProfilePage() {
-  const [userDetails,setUserDetails] = useState({});
-  const [name,setName]=useState("")
   const { data, isLoading, isError, error } = useUserDetails()
+  
+  const userDetails =data?.data;
+  const name = data?.data?.name;
+  const [leetcodeUsername, setLeetcodeUsername] = useState(userDetails?.leetcodeUsername || "");
+  const [codeforcesUsername, setCodeforcesUsername] = useState(userDetails?.codeforcesUsername || "");
 
-  useEffect(() =>{
-    setUserDetails(data?.data);
-    setName(data?.data?.name)    
-  },[data])
+  
+
+  //TODO: Implement the function to update platform usernames
+  const handleUpdatePlatformUsername = async () => {
+    console.log("Updating platform usernames...");
+    
+    
+  }
+
 
   if (isLoading) {
     return <div className="text-white text-center py-10">Loading...</div>;
@@ -59,6 +79,7 @@ export default function ProfilePage() {
     return <div className="text-white text-center py-10">Error: {error.message}</div>;
   }
 
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
       <Navbar />
@@ -74,8 +95,8 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold mb-8 text-white">My Profile</h1>
 
           {/* User Profile Card */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-            <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm mb-8 overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-4">
+            <Card className="border-gray-800 col-span-4 bg-gray-900/50 backdrop-blur-sm mb-8 overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300">
               <CardHeader className="pb-4">
                 <CardTitle className="text-white text-2xl">Profile Information</CardTitle>
                 <CardDescription className="text-gray-400">Your personal details and coding statistics</CardDescription>
@@ -109,12 +130,12 @@ export default function ProfilePage() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-sm mb-8 overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300">
+            <Card className="border-gray-800 col-span-2 bg-gray-900/50 backdrop-blur-sm mb-8 overflow-hidden hover:shadow-lg md:ml-4 hover:shadow-indigo-500/5 transition-all duration-300">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-white text-2xl">Platform Username</CardTitle>
                   <CardDescription className="text-gray-400">Your usernames on various coding platforms</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="">
                   <div className=" flex flex-col items-start justify-between gap-y-4">
                     <div className="flex justify-evenly gap-x-12">
                       <div className=" font-medium text-gray-400">LeetCode</div>
@@ -123,9 +144,57 @@ export default function ProfilePage() {
                     </div>
                     <div className="flex justify-evenly gap-x-9">
                       <div className=" font-medium text-gray-400">Codeforces</div>
-                      <ChevronsLeftRight className="text-indigo-400 text-sm" />
-                        <span className="text-white">{userDetails?.codeforcesUsername}</span>
+                      <ChevronsLeftRight className="text-indigo-400 text-sm " />
+                        <span className="text-white ml-2">{userDetails?.codeforcesUsername}</span>
                     </div>
+                  </div>
+                  <div>
+      <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="primary" className="mt-6 bg-indigo-600 text-white text-sm">{
+        userDetails?.leetcodeUsername == "" && userDetails?.codeforcesUsername == "" ? "Add Platform Username" : "Update Platform Username"}</Button>
+      </DrawerTrigger>
+      <DrawerContent className="bg-gray-900 ">
+        <div className="mx-auto w-full max-w-md ">
+          <DrawerHeader>
+            <DrawerTitle className="text-indigo-400 text-center text-xl ">{
+        userDetails?.leetcodeUsername == "" && userDetails?.codeforcesUsername == "" ? "Add Platform Username" : "Update Platform Username"}</DrawerTitle>
+            <DrawerDescription className="text-gray-300 mb-2 text-sm">You can update your username of various coding platforms here.</DrawerDescription>
+          </DrawerHeader>
+          <div className="flex flex-col gap-4 px-4 py-2">
+            <div className="flex justify-between gap-x-4">
+              <p className="w-full text-white">Leetcode username</p>
+              <p className="text-white">:</p>
+              <Input
+                id="leetcodeUsername"
+                value={leetcodeUsername}
+                defaultValue={leetcodeUsername}
+                onChange={(e) => setLeetcodeUsername(e.target.value)}
+                className="text-white"
+              />
+            </div>
+          <div className="flex justify-between gap-x-4">
+              <p className="w-full text-white">Codeforces username</p>
+              <p className="text-white">:</p>
+            <Input
+              id="codeforcesUsername"
+              value={codeforcesUsername}
+              defaultValue={codeforcesUsername}
+              onChange={(e) => setCodeforcesUsername(e.target.value)}
+              className="text-white"
+
+            />
+          </div>
+        </div>
+          <DrawerFooter>
+            <Button className="bg-indigo-600 my-2" onClick={handleUpdatePlatformUsername}>Submit</Button>
+            <DrawerClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </div>
+      </DrawerContent>
+    </Drawer>
                   </div>
                 </CardContent>
             </Card>          
