@@ -7,7 +7,7 @@ import axios from "axios"
 import { useQuery } from "@tanstack/react-query"
 import UpcomingContests from "../components/UpcomingContest"
 import PastContest from "../components/PastContest"
-
+import "../loader.css"
 
 // Platform filter options
 const platforms = [
@@ -22,21 +22,21 @@ export default function ContestsPage() {
   const [filteredContests, setFilteredContests] = useState([])
 
   const fetchUpcomingContests = async () => {
-    const response = await axios.get("http://localhost:3000/api/v1/contest/upcomingContests", {
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/contest/upcomingContests`, {
       withCredentials: true,
     });
     return response.data;
   }
 
   const fetchPastContests = async () => {
-    const response = await axios.get(`http://localhost:3000/api/v1/leetcode/lcprofile/pastContests?page=1&perPage=5`, {
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/pastContests?page=1&perPage=6`, {
       withCredentials: true,
     });
     return response.data;
   }
 
   const fetchPastContestsCodeforces = async () => {
-    const response = await axios.get(`http://localhost:3000/api/v1/codeforces/contests/past`)
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/codeforces/contests/past`)
     return response.data;
   }
 
@@ -74,11 +74,17 @@ export default function ContestsPage() {
       }
     } else if (activeTab === "past") {
       filtered = pastData?.data?.contests;
+      filtered = filtered.map((contest) => (
+        { ...contest, site: "leetcode" }
+      ))
       if( selectedPlatforms === "codeforces") {
-        filtered = pastDataCodeforces?.data?.contests;
+        filtered = pastDataCodeforces?.data?.contests.slice(0, 6);
+        filtered = filtered.map((contest) => (
+        { ...contest, site: "codeforces" }
+      ))
       }
       if(selectedPlatforms==="all") {
-        filtered = [...filtered, ...(pastDataCodeforces?.data?.contests || [])];
+        filtered = [...filtered, ...(pastDataCodeforces?.data?.contests.slice(0, 6) || [])];
       }
     }
 
@@ -88,7 +94,13 @@ export default function ContestsPage() {
   }, [selectedPlatforms, activeTab, upcomingData, pastData,pastDataCodeforces])
 
   if (upcomingLoading || pastLoading || pastLoadingCodeforces) {
-    return <div className="text-white text-center py-10">Loading...</div>
+    return (
+      <div className="min-h-screen text-white bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
+        <Navbar />
+        <div className="flex items-center justify-center w-full h-[85vh]">
+          <span className="loader"></span>
+        </div>
+      </div>)
   }
 
   if (upcomingError || pastError || pastErrorCodeforces) {

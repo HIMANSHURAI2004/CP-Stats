@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query"
 export default function ContestRatingLineChart({leetcodeUsername}) {
     
   const fetchLeetcodeContestStats = async () => {
-    const response = await axios.get(`http://localhost:3000/api/v1/leetcode/lcprofile/userContestRankingInfo/?username=${leetcodeUsername}`,{
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/userContestRankingInfo/?username=${leetcodeUsername}`,{
         withCredentials: true,
     })
     return response?.data;

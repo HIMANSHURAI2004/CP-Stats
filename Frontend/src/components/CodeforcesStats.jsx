@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query"
 export default function CodeforcesStats({ codeforcesUsername }) {
   const fetchCodeforcesStats = async () => {
     const response = await axios.get(
-      `http://localhost:3000/api/v1/codeforces/user/stats?handle=${codeforcesUsername}`,
+      `${import.meta.env.VITE_BACKEND_URL}/codeforces/user/stats?handle=${codeforcesUsername}`,
       {
         withCredentials: true,
       }

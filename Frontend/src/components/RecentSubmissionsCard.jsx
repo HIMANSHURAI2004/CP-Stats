@@ -31,7 +31,7 @@ const RecentSubmissionsCard = ({leetcodeUsername}) => {
   const [submissionsCount, setSubmissionsCount] = useState(5);
   const fetchLeetcodeRecentSubmissions = async () => {
     
-    const response = await axios.get(`http://localhost:3000/api/v1/leetcode/lcprofile/recentAcSubmissions/?username=${leetcodeUsername}`,{
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/recentAcSubmissions/?username=${leetcodeUsername}`,{
         withCredentials: true,
     })
     return response?.data;

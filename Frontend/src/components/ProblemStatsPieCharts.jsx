@@ -9,7 +9,7 @@ export default function ProblemStatsPieCharts({leetcodeUsername}) {
 
   const fetchLeetcodeProblemStats = async () => {
     
-    const response = await axios.get(`http://localhost:3000/api/v1/leetcode/lcprofile/profile/?username=${leetcodeUsername}`,{
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/profile/?username=${leetcodeUsername}`,{
         withCredentials: true,
     })
     return response?.data;

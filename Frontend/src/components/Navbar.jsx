@@ -29,7 +29,7 @@ export default function Navbar() {
 
   const getUserDetails = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/user/get-user", { 
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/get-user`, { 
         withCredentials: true 
       });
       if (response.status === 200 && response.data.data && response.data.data.name) {
@@ -47,7 +47,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:3000/api/v1/user/logout", {
+      await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/logout`, {
         withCredentials: true
       });
       setUserData(null);
@@ -136,6 +136,9 @@ export default function Navbar() {
                     <NavLink to="/profile" currentPath={pathname} mobile>
                       Profile
                     </NavLink>
+                    <NavLink to="/about" currentPath={pathname} mobile>
+                      About us
+                    </NavLink>
                   </div>
                   {!userData && (
                     <div className="flex flex-col space-y-2 px-2">
@@ -165,6 +168,9 @@ export default function Navbar() {
             <NavLink to="/profile" currentPath={pathname}>
               Profile
             </NavLink>
+            <NavLink to="/about" currentPath={pathname} mobile>
+              About us
+            </NavLink>
           </div>
 
           {/* User Actions */}
@@ -191,7 +197,7 @@ export default function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 border-gray-800 bg-gray-900/95 backdrop-blur-md">
                   <DropdownMenuLabel className="text-gray-400">
-                    My Account
+                    My Details
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-gray-800" />
                   <DropdownMenuItem
@@ -206,7 +212,7 @@ export default function Navbar() {
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    Logout
+                    Reset
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

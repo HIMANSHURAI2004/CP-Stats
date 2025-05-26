@@ -16,7 +16,7 @@ import { useQueryClient } from '@tanstack/react-query'
 
 function StatisticsPage() {
   const { data, isLoading, isError, error, refetch } = useUserDetails()
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
   
   const leetcodeUsername = data?.data?.leetcodeUsername
   const codeforcesUsername = data?.data?.codeforcesUsername
@@ -66,8 +66,8 @@ function StatisticsPage() {
             
             <Card className="border-0 bg-gray-900/80 backdrop-blur-sm shadow-2xl shadow-black/10 pt-10">
               <CardHeader className="space-y-1">
-                <h2 className="text-2xl font-bold text-white">Login Required</h2>
-                <p className="text-gray-400">Please login to view your statistics</p>
+                <h2 className="text-xl font-bold text-white">Connect Your Coding Profiles</h2>
+                <p className="text-gray-400 text-sm ">Please enter your LeetCode and Codeforces usernames to view your contest and problem-solving statistics.</p>
               </CardHeader>
               <CardContent className="pt-4">
                 <Link to="/signup">

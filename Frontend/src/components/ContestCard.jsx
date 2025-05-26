@@ -57,12 +57,28 @@ function ContestCard({
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-indigo-400" />
-              <span>Duration: {formatDate(contest.duration)}</span>
+              <span>Duration</span>
+              <span>:</span>
+              <span>
+                 {
+                  contest.site === "leetcode" ? 
+                   "1.5" : (
+                    Math.floor((new Date(contest?.endTime) - new Date(contest?.startTime)) / 3600000) 
+                   )
+                } hours
+                </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-indigo-400" />
-              <span>Ends: {formatDate(contest.endTime)}</span>
-            </div>
+            <div className="flex items-center gap-2"> 
+  <Calendar className="h-4 w-4 text-indigo-400" />
+  <span>
+    Ends: {
+      contest.site === "codeforces"
+        ? formatDate(contest.endTime)
+        : formatDate(new Date((contest.startTime + 5400000) ))
+    }
+  </span>
+</div>
+
           </div>
         </CardContent>
         <CardFooter>

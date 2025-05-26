@@ -22,7 +22,7 @@ const BadgeDisplayCard = ({leetcodeUsername}) => {
   
   const fetchLeetcodeBadges = async () => {
     
-    const response = await axios.get(`http://localhost:3000/api/v1/leetcode/lcprofile/userBadges/?username=${leetcodeUsername}`,{
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/userBadges/?username=${leetcodeUsername}`,{
         withCredentials: true,
     })
     return response?.data;

@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 export default function CodeforcesRatingLineChart({ codeforcesUsername }) {
   const fetchCodeforcesContestStats = async () => {
     const response = await axios.get(
-      `http://localhost:3000/api/v1/codeforces/user/rating?handle=${codeforcesUsername}`,
+      `${import.meta.env.VITE_BACKEND_URL}/codeforces/user/rating?handle=${codeforcesUsername}`,
       { withCredentials: true }
     );
     return response?.data;

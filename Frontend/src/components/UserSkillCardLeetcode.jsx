@@ -7,13 +7,13 @@ import { useQuery } from "@tanstack/react-query";
 const UserSkillCardLeetcode = ({leetcodeUsername}) => {
     const fetchLeetcodeSkillStats = async () => {
     
-    const response = await axios.get(`http://localhost:3000/api/v1/leetcode/lcprofile/skillStats/?username=${leetcodeUsername}`,{
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/skillStats/?username=${leetcodeUsername}`,{
         withCredentials: true,
     })
     return response?.data;
   }
 
-  const {data, isLoading , isError, error} = useQuery({
+  const {data , isError, error} = useQuery({
     queryKey : ["leetcodeSillStats"],
     queryFn : fetchLeetcodeSkillStats,
   })

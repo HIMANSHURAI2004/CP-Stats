@@ -17,7 +17,7 @@ function SignUp() {
     useEffect(() => {
         const checkUser = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/api/v1/user/get-user", {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/get-user`, {
                     withCredentials: true
                 });
                 // Only redirect if we have actual user data
@@ -67,7 +67,7 @@ function SignUp() {
     const onSubmit = async (data) => {
         try {
           setIsLoading(true);
-          const response = await axios.post("http://localhost:3000/api/v1/user/register", data, {
+          const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/register`, data, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -100,15 +100,15 @@ function SignUp() {
         </div>
   
         <div className="relative w-full max-w-md">
-          <div className="absolute z-40 -top-9 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-indigo-500/30">
+          <div className="absolute z-40 -top-7 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-indigo-500/30">
             <CodeIcon className="h-8 w-8 text-white" />
           </div>
   
           <Card className="border-0 bg-gray-900/80 backdrop-blur-sm shadow-2xl shadow-black/10">
-            <CardHeader className="space-y-1 pt-10 text-center">
-              <CardTitle className="text-2xl font-bold text-white">Create an account</CardTitle>
-              <CardDescription className="text-gray-400">
-                Enter your details to get started with CP-stats
+            <CardHeader className="space-y-1 pt-10 pb-2 text-center">
+              <CardTitle className="text-2xl font-bold text-white">Explore CP-stats</CardTitle>
+              <CardDescription className="text-gray-400 text-xs">
+                Enter your LeetCode and Codeforces usernames to see your contests, ratings, and problem-solving stats 
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -145,7 +145,7 @@ function SignUp() {
                       <FormItem>
                         <div className="relative">
                           <FormLabel className="absolute -top-2 left-3 bg-gray-900 px-1 text-xs font-medium text-gray-400">
-                            LeetCode Username
+                            LeetCode
                           </FormLabel>
                           <FormControl>
                             <div className="flex items-center rounded-md border border-gray-700 bg-gray-800/50 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
@@ -169,7 +169,7 @@ function SignUp() {
                       <FormItem>
                         <div className="relative">
                           <FormLabel className="absolute -top-2 left-3 bg-gray-900 px-1 text-xs font-medium text-gray-400">
-                            Codeforces Username
+                            Codeforces
                           </FormLabel>
                           <FormControl>
                             <div className="flex items-center rounded-md border border-gray-700 bg-gray-800/50 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
@@ -199,11 +199,11 @@ function SignUp() {
                     {isLoading ? (
                       <div className="flex items-center justify-center">
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                        <span className="ml-2">Creating account...</span>
+                        <span className="ml-2">Proceeding...</span>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center">
-                        <span>Create account</span>
+                        <span>Explore</span>
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </div>
                     )}
@@ -211,18 +211,10 @@ function SignUp() {
                 </form>
               </Form>
             </CardContent>
-            <CardFooter className="flex flex-col space-y-4 border-t border-gray-800 pt-4">
-              <div className="text-center text-xs text-gray-500">
-                By creating an account, you agree to our{" "}
-                <a href="/terms" className="text-gray-400 hover:text-gray-300 transition-colors">
-                  Terms of Service
-                </a>{" "}
-                and{" "}
-                <a href="/privacy" className="text-gray-400 hover:text-gray-300 transition-colors">
-                  Privacy Policy
-                </a>
-              </div>
+            <CardFooter className="text-center text-gray-400 text-sm">
+              <p className='text-xs text-gray-500 '>We fetch only public data using your usernames. No passwords needed — your privacy is always respected.</p>
             </CardFooter>
+
           </Card>
         </div>
       </div>

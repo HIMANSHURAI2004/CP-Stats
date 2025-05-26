@@ -7,7 +7,7 @@ export default function LanguageStatsCard({ leetcodeUsername }) {
 
   const fetchLeetcodeLanguageStats = async () => {
     
-    const response = await axios.get(`http://localhost:3000/api/v1/leetcode/lcprofile/languageStats/?username=${leetcodeUsername}`,{
+    const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/languageStats/?username=${leetcodeUsername}`,{
         withCredentials: true,
     })
     return response?.data;
