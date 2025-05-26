@@ -10,6 +10,8 @@ import {
   getStreakCounter,
   getPastContests,
   getSkillStats,
+  getUserProfile,
+  verifyLeetCodeUsername
 } from "../controllers/leetcodeprofile.controller.js";
 
 const router = express.Router();
@@ -153,6 +155,34 @@ router.get("/lcprofile/skillStats", async (req, res) => {
   } catch (err) {
     console.error("Error:", err);
     res.status(500).send("Error while fetching data for /skillStats");
+  }
+});
+
+// Get user profile with active badge
+router.get("/lcprofile/userProfile", async (req, res) => {
+  const { username } = req.query;
+  if (!username) return res.status(400).json({ error: "Missing username query parameter" });
+
+  try {
+    const data = await getUserProfile(username);
+    res.json({ data });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Error while fetching user profile");
+  }
+});
+
+// Verify LeetCode username
+router.get("/verify-username", async (req, res) => {
+  const { username } = req.query;
+  if (!username) return res.status(400).json({ error: "Missing username query parameter" });
+
+  try {
+    const result = await verifyLeetCodeUsername(username);
+    res.json(result);
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ error: "Error while verifying username" });
   }
 });
 

@@ -196,23 +196,12 @@ export default function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 border-gray-800 bg-gray-900/95 backdrop-blur-md">
-                  <DropdownMenuLabel className="text-gray-400">
-                    My Details
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-gray-800" />
-                  <DropdownMenuItem
-                    className="text-gray-300 focus:bg-gray-800 focus:text-white cursor-pointer"
-                    onClick={() => navigate("/profile")}
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
-                  </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-gray-300 focus:bg-gray-800 focus:text-white cursor-pointer"
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    Reset
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

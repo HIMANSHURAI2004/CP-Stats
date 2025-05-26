@@ -8,9 +8,11 @@ import { Input } from "../components/ui/input"
 import axios from 'axios'
 import Navbar from "../components/navbar"
 import { useNavigate } from "react-router-dom"
+import { toast, Toaster } from "sonner"
 
 function SignUp() {
     const [isLoading, setIsLoading] = useState(false)
+    const [isVerifying, setIsVerifying] = useState(false)
     const navigate = useNavigate()
     
     // Check if user is already logged in
@@ -55,7 +57,6 @@ function SignUp() {
             }
           },
           codeforcesUsername: {
-            required: "Codeforces username is required",
             minLength: {
               value: 3,
               message: "Codeforces username must be at least 3 characters"
@@ -64,9 +65,69 @@ function SignUp() {
         }
       })
 
+    // Function to verify Codeforces handle
+    const verifyCodeforcesHandle = async (handle) => {
+      if (!handle) return true; // Skip verification if handle is empty
+      
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/codeforces/user/info`,
+          {
+            params: { handle },
+            withCredentials: true,
+          }
+        );
+        
+        return response.status === 200;
+      } catch (error) {
+        return false;
+      }
+    };
+
+    // Function to verify LeetCode handle
+    const verifyLeetCodeHandle = async (handle) => {
+      if (!handle) return true; // Skip verification if handle is empty
+      
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/leetcode/verify-username`,
+          {
+            params: { username: handle },
+            withCredentials: true,
+          }
+        );
+        
+        return response.data.exists;
+      } catch (error) {
+        return false;
+      }
+    };
+
     const onSubmit = async (data) => {
         try {
           setIsLoading(true);
+          setIsVerifying(true);
+
+          // Verify LeetCode handle
+          const isLeetCodeValid = await verifyLeetCodeHandle(data.leetcodeUsername);
+          if (!isLeetCodeValid) {
+            toast.error("Invalid LeetCode handle. Please check and try again.");
+            setIsVerifying(false);
+            setIsLoading(false);
+            return;
+          }
+
+          // Verify Codeforces handle if provided
+          if (data.codeforcesUsername) {
+            const isCodeforcesValid = await verifyCodeforcesHandle(data.codeforcesUsername);
+            if (!isCodeforcesValid) {
+              toast.error("Invalid Codeforces handle. Please check and try again.");
+              setIsVerifying(false);
+              setIsLoading(false);
+              return;
+            }
+          }
+
           const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/register`, data, {
             headers: {
               "Content-Type": "application/json",
@@ -75,6 +136,7 @@ function SignUp() {
           });
           
           if (response.status === 201) {
+            toast.success("Account created successfully!");
             // Wait a bit for cookies to be set
             setTimeout(() => {
               navigate("/");
@@ -87,11 +149,13 @@ function SignUp() {
           });
         } finally {
           setIsLoading(false);
+          setIsVerifying(false);
         }
     }  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
+      <Toaster position="top-right" richColors />
       <Navbar />
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4 font-[poppins]">
         <div className="absolute inset-0 overflow-hidden">
@@ -194,12 +258,12 @@ function SignUp() {
                   <Button
                     type="submit"
                     className="mt-4 w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 transition-all duration-300"
-                    disabled={isLoading}
+                    disabled={isLoading || isVerifying}
                   >
-                    {isLoading ? (
+                    {isLoading || isVerifying ? (
                       <div className="flex items-center justify-center">
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                        <span className="ml-2">Proceeding...</span>
+                        <span className="ml-2">{isVerifying ? "Verifying..." : "Proceeding..."}</span>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center">

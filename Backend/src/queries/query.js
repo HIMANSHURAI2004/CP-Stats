@@ -208,3 +208,22 @@ export const skillStatsQuery = `
     }
 `;
 
+export const getUserProfileQuery = `
+    query getUserProfile($username: String!) {
+      matchedUser(username: $username) {
+        activeBadge {
+          displayName
+          icon
+        }
+      }
+    }
+`;
+
+export const verifyLeetCodeUsernameQuery = `
+    query verifyLeetCodeUsername($username: String!) {
+      matchedUser(username: $username) {
+        username
+      }
+    }
+`;
+

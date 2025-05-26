@@ -9,6 +9,8 @@ import {
   getStreakCounterQuery,
   pastContestsQuery,
   skillStatsQuery,
+  getUserProfileQuery,
+  verifyLeetCodeUsernameQuery
 } from "../queries/query.js";
 
 import { handleRequest } from "../httpRequests/request.js";
@@ -91,6 +93,26 @@ const getSkillStats = async (username) => {
   return data.matchedUser;
 };
 
+const getUserProfile = async (username) => {
+  const data = await handleRequest(getUserProfileQuery, { username });
+  return data.matchedUser;
+};
+
+const verifyLeetCodeUsername = async (username) => {
+  try {
+    const data = await handleRequest(verifyLeetCodeUsernameQuery, { username });
+    return {
+      exists: !!data.matchedUser,
+      username: data.matchedUser?.username
+    };
+  } catch (error) {
+    return {
+      exists: false,
+      error: error.message
+    };
+  }
+};
+
 export {
   getLeetCodeStats,
   getPublicProfile,
@@ -102,5 +124,7 @@ export {
   getStreakCounter,
   getPastContests,
   getSkillStats,
+  getUserProfile,
+  verifyLeetCodeUsername
 };
 

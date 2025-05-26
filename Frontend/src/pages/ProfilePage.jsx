@@ -98,14 +98,40 @@ export default function ProfilePage() {
     }
   };
 
+  // Function to verify LeetCode handle
+  const verifyLeetCodeHandle = async (handle) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/leetcode/verify-username`,
+        {
+          params: { username: handle },
+          withCredentials: true,
+        }
+      );
+      
+      return response.data.exists;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const handleUpdatePlatformUsername = async () => {
     try {
       setIsVerifying(true);
 
-      // If Codeforces username is provided, verify it first
+      // Verify LeetCode handle
+      const isLeetCodeValid = await verifyLeetCodeHandle(leetcodeUsername);
+      if (!isLeetCodeValid) {
+        toast.error("Invalid LeetCode handle. Please check and try again.");
+        resetInputFields();
+        setIsVerifying(false);
+        return;
+      }
+
+      // If Codeforces username is provided, verify it
       if (codeforcesUsername) {
-        const isValid = await verifyCodeforcesHandle(codeforcesUsername);
-        if (!isValid) {
+        const isCodeforcesValid = await verifyCodeforcesHandle(codeforcesUsername);
+        if (!isCodeforcesValid) {
           toast.error("Invalid Codeforces handle. Please check and try again.");
           resetInputFields();
           setIsVerifying(false);
@@ -113,7 +139,7 @@ export default function ProfilePage() {
         }
       }
 
-      // If verification passed or no Codeforces username provided, proceed with update
+      // If verification passed, proceed with update
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/user/update-profile`,
         {
