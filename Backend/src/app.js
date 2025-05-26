@@ -28,18 +28,18 @@ app.use(errorHandler);
 import userRouter from "./routes/user.routes.js";
 
 
-app.use("/api/v1/user",userRouter);
+app.use("/user",userRouter);
 
 
 import contestRouter from "./routes/contest.routes.js";
 
-app.use("/api/v1/contest",contestRouter);
+app.use("/contest",contestRouter);
 
 
 import leetcodeRouter from "./routes/leetcode.routes.js";
 import codeforcesRoutes from './routes/codeforces.routes.js';
 
-app.use("/api/v1/leetcode", leetcodeRouter);
-app.use('/api/v1/codeforces', codeforcesRoutes);
+app.use("/leetcode", leetcodeRouter);
+app.use('/codeforces', codeforcesRoutes);
 
 export {app}
