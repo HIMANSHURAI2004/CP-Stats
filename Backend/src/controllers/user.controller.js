@@ -60,7 +60,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "none", domain: '.render.com',
+        sameSite: "none", 
         path: "/",
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     };
@@ -132,7 +132,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         const cookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "none", domain: '.render.com',
+            sameSite: "none", 
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         };
@@ -152,7 +152,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "none", domain: '.render.com',
+        sameSite: "none", 
         path: "/",
         expires: new Date(0) // Set expiration to past date to clear cookie
     };
@@ -190,7 +190,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "none", domain: '.render.com',
+        sameSite: "none", 
         path: "/",
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     };
