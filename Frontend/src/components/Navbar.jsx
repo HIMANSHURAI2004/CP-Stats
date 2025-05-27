@@ -38,7 +38,7 @@ export default function Navbar() {
         setUserData(null);
       }
     } catch (error) {
-      console.error("Error fetching user details:", error);
+      console.error("Error ", error);
       setUserData(null);
     } finally {
       setLoading(false);
@@ -53,7 +53,7 @@ export default function Navbar() {
       setUserData(null);
       navigate("/");
     } catch (error) {
-      console.error("Error during logout:", error);
+      console.error("Error", error);
     }
   };
 
@@ -84,7 +84,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="relative font-[poppins]">
+    <div className="relative font-[poppins] bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
       {/* Glow effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-purple-500/10 blur-3xl"></div>
@@ -196,17 +196,6 @@ export default function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-52 mr-4 border-gray-800 bg-gray-900/95 backdrop-blur-md">
-                  <DropdownMenuLabel className="text-gray-400">
-                    My Details
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-gray-800" />
-                  <DropdownMenuItem
-                    className="text-gray-300 focus:bg-gray-800 focus:text-white cursor-pointer"
-                    onClick={() => navigate("/profile")}
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
-                  </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-gray-300 focus:bg-gray-800 focus:text-white cursor-pointer"
                     onClick={handleLogout}

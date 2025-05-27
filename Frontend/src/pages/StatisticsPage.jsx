@@ -28,7 +28,6 @@ function StatisticsPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
-        <Navbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-600 border-t-transparent"></div>
         </div>
@@ -39,7 +38,6 @@ function StatisticsPage() {
   if(isError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
-        <Navbar />
         <div className="text-white text-center py-10">
           <h1 className="text-2xl font-bold">Error: {error.message}</h1>
         </div>
@@ -51,7 +49,6 @@ function StatisticsPage() {
   if (!data?.data?.name) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
-        <Navbar />
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] p-4">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-40 -right-20 h-60 w-60 rounded-full bg-purple-500/10 blur-3xl"></div>
@@ -84,14 +81,13 @@ function StatisticsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins] pb-10">
-      <Navbar />
         {/* Glow effects */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-40 -right-20 h-60 w-60 rounded-full bg-purple-500/10 blur-3xl"></div>
             <div className="absolute -bottom-20 -left-40 h-60 w-60 rounded-full bg-blue-500/10 blur-3xl"></div>
           </div>
 
-          <h1 className="text-3xl font-bold m-8 text-white">Coding Statistics</h1>
+          <h1 className="text-3xl font-bold m-8 mt-0 pt-8 text-white">Coding Statistics</h1>
       <div>
         <Card className="bg-gray-900/50 backdrop-blur-sm border-gray-800 shadow-lg shadow-indigo-500/5 mx-10 md:mx-24 mt-10 p-5 ">
           <CardHeader className="">

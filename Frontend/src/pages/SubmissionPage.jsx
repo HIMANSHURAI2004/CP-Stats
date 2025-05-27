@@ -24,7 +24,6 @@ function SubmissionPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
-        <Navbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-600 border-t-transparent"></div>
         </div>
@@ -35,7 +34,6 @@ function SubmissionPage() {
   if(isError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
-        <Navbar />
         <div className="text-white text-center py-10">
           <h1 className="text-2xl font-bold">Error: {error.message}</h1>
         </div>
@@ -47,7 +45,6 @@ function SubmissionPage() {
   if (!data?.data?.name) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
-        <Navbar />
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] p-4">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-40 -right-20 h-60 w-60 rounded-full bg-purple-500/10 blur-3xl"></div>
@@ -80,14 +77,13 @@ function SubmissionPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins] pb-10">
-      <Navbar />
         {/* Glow effects */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-40 -right-20 h-60 w-60 rounded-full bg-purple-500/10 blur-3xl"></div>
             <div className="absolute -bottom-20 -left-40 h-60 w-60 rounded-full bg-blue-500/10 blur-3xl"></div>
           </div>
 
-          <h1 className="text-2xl font-bold m-8 text-white">Recent Problem Submissions</h1>
+          <h1 className="text-2xl font-bold m-8 mt-0 pt-8 text-white">Recent Problem Submissions</h1>
       <div className='mx-16 mt-8 flex flex-col gap-4'>
             <RecentSubmissionCodeforces codeforcesUsername={codeforcesUsername}/>
             <RecentSubmissionsCard leetcodeUsername={leetcodeUsername}/>

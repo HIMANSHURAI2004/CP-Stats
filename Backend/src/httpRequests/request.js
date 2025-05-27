@@ -16,7 +16,7 @@ const handleRequest = async (query, variables = {}) => {
       }),
     });
     // Log status code or status text, not the whole response
-    console.log("Response status:", response.status);
+    // console.log("Response status:", response.status);
 
     const data = await response.json();
     return data.data;

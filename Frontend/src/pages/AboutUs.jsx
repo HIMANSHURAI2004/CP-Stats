@@ -7,7 +7,6 @@ import {
   } from "../components/ui/card";
   import { Link } from "react-router-dom";
   import { Github, Linkedin } from "lucide-react";
-import Navbar from "../components/Navbar.jsx";
   const contributors = [
     {
       name: 'Himanshu Rai',
@@ -27,7 +26,6 @@ import Navbar from "../components/Navbar.jsx";
   const AboutUs = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
-        <Navbar />
       <div className="lg:mb-20">
 
         {/* Hero Section */}

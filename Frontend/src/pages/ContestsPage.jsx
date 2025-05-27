@@ -96,7 +96,6 @@ export default function ContestsPage() {
   if (upcomingLoading || pastLoading || pastLoadingCodeforces) {
     return (
       <div className="min-h-screen text-white bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
-        <Navbar />
         <div className="flex items-center justify-center w-full h-[85vh]">
           <span className="loader"></span>
         </div>
@@ -114,7 +113,6 @@ export default function ContestsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins] w-full">
-      <Navbar />
 
       <main className=" py-10 lg:px-10 sm:px-4 ">
         <div className="relative">
