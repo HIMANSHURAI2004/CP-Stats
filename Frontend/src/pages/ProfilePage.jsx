@@ -1,7 +1,6 @@
 import { User, Mail, Award, Code, Terminal, MoveRight, ChevronsLeftRight, MapPin, GraduationCap, Github, Linkedin, View, Eye, Star, Handshake, Twitter } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
-import { Progress } from "../components/ui/progress"
-import Navbar from "../components/navbar"
+import Navbar from "../components/Navbar.jsx"
 import {  useState } from "react"
 import { useUserDetails } from "../hooks/userDetails.js"
 import { Button } from "../components/ui/button"
