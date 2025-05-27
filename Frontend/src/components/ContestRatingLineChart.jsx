@@ -74,7 +74,6 @@ export default function ContestRatingLineChart({leetcodeUsername}) {
     if(isError) {
       return (
         <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
-          <Navbar />
           <div className="text-white text-center py-10">
             <h1 className="text-2xl font-bold">Error: {error.message}</h1>
           </div>

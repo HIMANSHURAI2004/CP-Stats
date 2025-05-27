@@ -156,7 +156,6 @@ function SignUp() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
       <Toaster position="top-right" richColors />
-      <Navbar />
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4 font-[poppins]">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-purple-500/10 blur-3xl"></div>

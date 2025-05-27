@@ -35,8 +35,8 @@ export default function ProfilePage() {
   // Store original values
   const originalLeetcodeUsername = userDetails?.leetcodeUsername || "";
   const originalCodeforcesUsername = userDetails?.codeforcesUsername || "";
-  console.log("Leetcode Username:", leetcodeUsername);
-  console.log("Codeforces Username:", codeforcesUsername);
+  // console.log("Leetcode Username:", leetcodeUsername);
+  // console.log("Codeforces Username:", codeforcesUsername);
   
   // Function to reset input fields to original values
   const resetInputFields = () => {
@@ -66,7 +66,7 @@ export default function ProfilePage() {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/codeforces/user/info?handle=${codeforcesUsername}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching Codeforces profile:", error);
+      console.error(error);
       throw error;
     }
   }
@@ -166,7 +166,6 @@ export default function ProfilePage() {
   if (isLoading || isCodeforcesLoading || isLeetcodeLoading) {
     return (
           <div className="min-h-screen text-white bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
-            <Navbar />
             <div className="flex items-center justify-center w-full h-[85vh]">
               <span className="loader"></span>
             </div>
@@ -182,7 +181,6 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
         <Toaster position="top-right" richColors />
-        <Navbar />
         <main className="py-10 px-5">
           <div className="relative">
             {/* Glow effects */}
@@ -198,7 +196,7 @@ export default function ProfilePage() {
               </p>
               <Button 
                 className="bg-indigo-600 text-white hover:bg-indigo-700"
-                onClick={() => window.location.href = "/login"}
+                onClick={() => window.location.href = "/signup"}
               >
                 Get Started
               </Button>
@@ -212,7 +210,6 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
       <Toaster position="top-right" richColors />
-      <Navbar />
 
       <main className=" py-10 px-8">
         <div className="relative">

@@ -4,7 +4,7 @@ import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
 
 const PastContest = ({ contests }) => {
-  console.log("Past contests data:", contests);
+  // console.log("Past contests data:", contests);
   
   const formatDate = (dateString) => {
     const options = {

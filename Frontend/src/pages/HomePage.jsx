@@ -31,7 +31,6 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
-        <Navbar />
         <main className="container mx-auto px-4 py-10">
           <div className="flex items-center justify-center h-[60vh]">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
@@ -43,7 +42,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
-      <Navbar />
       <main className="container mx-auto px-4 py-10">
         {/* Welcome Section */}
         <div className="mb-16 text-center">
