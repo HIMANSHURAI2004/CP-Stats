@@ -184,7 +184,7 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
         <Toaster position="top-right" richColors />
         <Navbar />
-        <main className="container py-10 px-5">
+        <main className="py-10 px-5">
           <div className="relative">
             {/* Glow effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -215,7 +215,7 @@ export default function ProfilePage() {
       <Toaster position="top-right" richColors />
       <Navbar />
 
-      <main className="container py-10 px-5">
+      <main className=" py-10 px-8">
         <div className="relative">
           {/* Glow effects */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -262,14 +262,14 @@ export default function ProfilePage() {
                   </div>
                     <DrawerFooter>
                       <Button 
-                        className="bg-indigo-600 my-2" 
+                        className="bg-indigo-600 my-2 text-white hover:bg-indigo-700 " 
                         onClick={handleUpdatePlatformUsername}
                         disabled={isVerifying}
                       >
                         {isVerifying ? "Verifying..." : "Submit"}
                       </Button>
                       <DrawerClose asChild>
-                        <Button variant="outline">Cancel</Button>
+                        <Button className="bg-white hover:bg-gray-200">Cancel</Button>
                       </DrawerClose>
                     </DrawerFooter>
                   </div>

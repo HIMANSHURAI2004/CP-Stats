@@ -66,7 +66,7 @@ export default function Navbar() {
     return (
       <div className="relative font-[poppins]">
         <nav className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900/80 backdrop-blur-md md:px-5">
-          <div className="container flex h-16 items-center justify-between">
+          <div className=" flex h-16 items-center justify-between">
             <div className="flex items-center gap-2">
               <Link to="/" className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 shadow-lg shadow-indigo-500/30">
@@ -92,7 +92,7 @@ export default function Navbar() {
       </div>
 
       <nav className="sticky top-0 z-50 w-full border-b border-gray-800 bg-gray-900/80 backdrop-blur-md md:px-5">
-        <div className="container flex h-16 items-center justify-between">
+        <div className=" flex h-16 items-center justify-between mx-0">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Link to="/" className="flex items-center gap-2">
@@ -177,7 +177,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-4">
             {userData ? (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger >
                   <Button
                     variant="ghost"
                     className="relative flex items-center gap-2 text-gray-300 hover:text-white hover:bg-gray-800"
@@ -195,13 +195,24 @@ export default function Navbar() {
                     <ChevronDown className="h-4 w-4 opacity-60" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 border-gray-800 bg-gray-900/95 backdrop-blur-md">
+                <DropdownMenuContent className="w-52 mr-4 border-gray-800 bg-gray-900/95 backdrop-blur-md">
+                  <DropdownMenuLabel className="text-gray-400">
+                    My Details
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-gray-800" />
+                  <DropdownMenuItem
+                    className="text-gray-300 focus:bg-gray-800 focus:text-white cursor-pointer"
+                    onClick={() => navigate("/profile")}
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-gray-300 focus:bg-gray-800 focus:text-white cursor-pointer"
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    Logout
+                    Reset
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

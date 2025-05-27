@@ -113,10 +113,10 @@ export default function ContestsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 font-[poppins] w-full">
       <Navbar />
 
-      <main className="container py-10 lg:px-10 sm:px-4">
+      <main className=" py-10 lg:px-10 sm:px-4 ">
         <div className="relative">
           {/* Glow effects */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
