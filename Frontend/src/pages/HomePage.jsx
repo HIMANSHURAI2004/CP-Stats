@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/navbar";
+import Navbar from "../components/navbar.jsx";
 import { Code2, Trophy, BookOpen, TrendingUp, Star, ArrowRight } from "lucide-react";
 import axios from "axios";
 import { Button } from "../components/ui/button";

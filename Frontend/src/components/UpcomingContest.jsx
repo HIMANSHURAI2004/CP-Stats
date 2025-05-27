@@ -1,4 +1,4 @@
-import ContestCard from "./ContestCard";
+import ContestCard from "./ContestCard.jsx";
 
 export default function UpcomingContests({contests:upcomingContests}) {
 

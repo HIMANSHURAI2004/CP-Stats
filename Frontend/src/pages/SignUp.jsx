@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../components/ui/form"
 import { Input } from "../components/ui/input"
 import axios from 'axios'
-import Navbar from "../components/navbar"
+import Navbar from "../components/navbar.jsx"
 import { useNavigate } from "react-router-dom"
 import { toast, Toaster } from "sonner"
 

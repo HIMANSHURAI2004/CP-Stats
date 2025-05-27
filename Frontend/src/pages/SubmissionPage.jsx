@@ -1,13 +1,13 @@
 import { Card, CardContent, CardHeader } from '../components/ui/card'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar.jsx'
 import React, { useEffect } from 'react'
-import { useUserDetails } from '../hooks/userDetails'
-import RecentSubmissionsCard from '../components/RecentSubmissionsCard'
-import RecentSubmissionCodeforces from '../components/RecentSubmissionCodeforces'
+import { useUserDetails } from '../hooks/userDetails.js'
+import RecentSubmissionsCard from '../components/RecentSubmissionsCard.jsx'
+import RecentSubmissionCodeforces from '../components/RecentSubmissionCodeforces.jsx'
 import { Button } from '../components/ui/button'
 import { Link } from 'react-router-dom'
 import { CodeIcon } from 'lucide-react'
-import { useQueryClient } from '@tanstack/react-query'
+
 
 function SubmissionPage() {
   const { data, isLoading, isError, error, refetch } = useUserDetails()

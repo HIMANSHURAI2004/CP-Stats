@@ -7,7 +7,7 @@ import {
   } from "../components/ui/card";
   import { Link } from "react-router-dom";
   import { Github, Linkedin } from "lucide-react";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbar.jsx";
   const contributors = [
     {
       name: 'Himanshu Rai',

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Progress } from "../components/ui/progress"
 import Navbar from "../components/navbar"
 import {  useState } from "react"
-import { useUserDetails } from "../hooks/userDetails"
+import { useUserDetails } from "../hooks/userDetails.js"
 import { Button } from "../components/ui/button"
 import {
   Drawer,
