@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SignUp from "./pages/SignUp";
-import HomePage from "./pages/HomePage";
-import ContestsPage from "./pages/ContestsPage";
-import ProfilePage from "./pages/ProfilePage";
-import SubmissionPage from "./pages/SubmissionPage";
-import StatisticsPage from "./pages/StatisticsPage";
-import AboutUs from "./pages/AboutUs";
+import SignUp from "./pages/SignUp.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import ContestsPage from "./pages/ContestsPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import SubmissionPage from "./pages/SubmissionPage.jsx";
+import StatisticsPage from "./pages/StatisticsPage.jsx";
+import AboutUs from "./pages/AboutUs.jsx";
 
 function App() {
   return (
