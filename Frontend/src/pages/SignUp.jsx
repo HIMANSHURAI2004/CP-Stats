@@ -126,16 +126,20 @@ function SignUp() {
               setIsLoading(false);
               return;
             }
-          }          const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/register`, data, {
+          }
+          
+          const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/register`, data, {
             headers: {
               "Content-Type": "application/json",
             },
             withCredentials: true
           });
-          
-          if (response.status === 201) {
+            if (response.status === 201) {
             toast.success("Account created successfully!");
-            navigate("/");
+            // Small delay to ensure cookie is set
+            setTimeout(() => {
+              navigate("/");
+            }, 500);
           }
         } catch (error) {
           console.error("Error during signup:", error);

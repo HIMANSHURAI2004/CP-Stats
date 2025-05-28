@@ -56,10 +56,9 @@ export default function Navbar() {
       console.error("Error", error);
     }
   };
-
   useEffect(() => {
     getUserDetails();
-  }, []);
+  }, [pathname]); // Refresh user data when pathname changes
 
   // Show loading state
   if (loading) {
