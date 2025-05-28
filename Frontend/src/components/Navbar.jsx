@@ -51,7 +51,7 @@ export default function Navbar() {
         withCredentials: true
       });
       setUserData(null);
-      navigate("/");
+      navigate("/signup");
     } catch (error) {
       console.error("Error", error);
     }

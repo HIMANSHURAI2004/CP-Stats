@@ -134,7 +134,7 @@ function SignUp() {
             },
             withCredentials: true
           });
-          
+          window.location.reload();
           if (response.status === 201) {
             toast.success("Account created successfully!");
             // Wait a bit for cookies to be set

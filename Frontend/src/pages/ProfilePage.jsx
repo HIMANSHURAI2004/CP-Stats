@@ -1,7 +1,7 @@
 import { User, Mail, Award, Code, Terminal, MoveRight, ChevronsLeftRight, MapPin, GraduationCap, Github, Linkedin, View, Eye, Star, Handshake, Twitter } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import Navbar from "../components/Navbar.jsx"
-import {  useState } from "react"
+import { useState } from "react"
 import { useUserDetails } from "../hooks/userDetails.js"
 import { Button } from "../components/ui/button"
 import {
@@ -23,11 +23,11 @@ import { Link } from "react-router-dom"
 import "../loader.css"
 
 export default function ProfilePage() {
-  const { data, isLoading, isError, error } = useUserDetails()
+  const { data: userData, isLoading: isUserLoading, isError, error } = useUserDetails()
   const queryClient = useQueryClient();
   
-  const userDetails = data?.data;
-  const name = data?.data?.name;
+  const userDetails = userData?.data;
+  const name = userData?.data?.name;
   const [leetcodeUsername, setLeetcodeUsername] = useState(userDetails?.leetcodeUsername || "");
   const [codeforcesUsername, setCodeforcesUsername] = useState(userDetails?.codeforcesUsername || "");
   const [isVerifying, setIsVerifying] = useState(false);
@@ -44,41 +44,33 @@ export default function ProfilePage() {
     setCodeforcesUsername(originalCodeforcesUsername);
   };
 
-  const fetchLeetcodeProfile = async () => {
-      
+  // Only fetch profiles if user is logged in and has usernames set
+  const {data: leetcodeProfile, isLoading: isLeetcodeLoading} = useQuery({
+    queryKey: ["leetcodeProfile"],
+    queryFn: async () => {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/publicProfile?username=${leetcodeUsername}`, {
         withCredentials: true,
       });
       return response.data;
-  }
-
-  const {data: leetcodeProfile, isLoading: isLeetcodeLoading} = useQuery({
-    queryKey: ["leetcodeProfile"],
-    queryFn: fetchLeetcodeProfile,
+    },
+    enabled: !!userDetails?.name && !!leetcodeUsername,
     staleTime: 0,
     refetchOnMount: true,
   });
-  
-  const leetcodeUserProfile=leetcodeProfile?.data;
-  
-  const fetchCodeforcesProfile = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/codeforces/user/info?handle=${codeforcesUsername}`);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
   
   const {data: codeforcesProfile, isLoading: isCodeforcesLoading} = useQuery({
     queryKey: ["codeforcesProfile"],
-    queryFn: fetchCodeforcesProfile,
+    queryFn: async () => {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/codeforces/user/info?handle=${codeforcesUsername}`);
+      return response.data;
+    },
+    enabled: !!userDetails?.name && !!codeforcesUsername,
     staleTime: 0,
     refetchOnMount: true,
   });
 
-  const codeforcesUserProfile=codeforcesProfile?.data[0];
+  const leetcodeUserProfile = leetcodeProfile?.data;
+  const codeforcesUserProfile = codeforcesProfile?.data?.[0];
   
   // Function to verify Codeforces handle
   const verifyCodeforcesHandle = async (handle) => {
@@ -163,7 +155,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (isLoading || isCodeforcesLoading || isLeetcodeLoading) {
+  if (isUserLoading) {
     return (
           <div className="min-h-screen text-white bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
             <div className="flex items-center justify-center w-full h-[85vh]">
@@ -207,6 +199,16 @@ export default function ProfilePage() {
     );
   }
   
+  // Show loading state while fetching platform profiles
+  if (isLeetcodeLoading || isCodeforcesLoading) {
+    return (
+          <div className="min-h-screen text-white bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
+            <div className="flex items-center justify-center w-full h-[85vh]">
+              <span className="loader"></span>
+            </div>
+          </div>)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 scrollbar-hide">
       <Toaster position="top-right" richColors />
