@@ -1,7 +1,7 @@
 import { User, Mail, Award, Code, Terminal, MoveRight, ChevronsLeftRight, MapPin, GraduationCap, Github, Linkedin, View, Eye, Star, Handshake, Twitter } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card"
 import Navbar from "../components/Navbar.jsx"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useUserDetails } from "../hooks/userDetails.js"
 import { Button } from "../components/ui/button"
 import {
@@ -23,21 +23,41 @@ import { Link } from "react-router-dom"
 import "../loader.css"
 
 export default function ProfilePage() {
-  const { data: userData, isLoading: isUserLoading, isError, error } = useUserDetails()
+  const { data: userData, isLoading: isUserLoading, isError, error, refetch: refetchUserDetails } = useUserDetails()
   const queryClient = useQueryClient();
   
   const userDetails = userData?.data;
   const name = userData?.data?.name;
-  const [leetcodeUsername, setLeetcodeUsername] = useState(userDetails?.leetcodeUsername || "");
-  const [codeforcesUsername, setCodeforcesUsername] = useState(userDetails?.codeforcesUsername || "");
+  const [leetcodeUsername, setLeetcodeUsername] = useState("");
+  const [codeforcesUsername, setCodeforcesUsername] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+
+  // Update local state when userDetails changes
+  useEffect(() => {
+    if (userDetails) {
+      setLeetcodeUsername(userDetails.leetcodeUsername || "");
+      setCodeforcesUsername(userDetails.codeforcesUsername || "");
+    }
+  }, [userDetails]);
+
+  // Refresh data when component mounts or when userDetails change
+  useEffect(() => {
+    const refreshData = async () => {
+      await refetchUserDetails();
+      if (leetcodeUsername) {
+        queryClient.invalidateQueries(["leetcodeProfile", leetcodeUsername]);
+      }
+      if (codeforcesUsername) {
+        queryClient.invalidateQueries(["codeforcesProfile", codeforcesUsername]);
+      }
+    };
+    refreshData();
+  }, [refetchUserDetails, queryClient, leetcodeUsername, codeforcesUsername]);
 
   // Store original values
   const originalLeetcodeUsername = userDetails?.leetcodeUsername || "";
   const originalCodeforcesUsername = userDetails?.codeforcesUsername || "";
-  // console.log("Leetcode Username:", leetcodeUsername);
-  // console.log("Codeforces Username:", codeforcesUsername);
-  
+
   // Function to reset input fields to original values
   const resetInputFields = () => {
     setLeetcodeUsername(originalLeetcodeUsername);
@@ -46,27 +66,33 @@ export default function ProfilePage() {
 
   // Only fetch profiles if user is logged in and has usernames set
   const {data: leetcodeProfile, isLoading: isLeetcodeLoading} = useQuery({
-    queryKey: ["leetcodeProfile"],
+    queryKey: ["leetcodeProfile", leetcodeUsername],
     queryFn: async () => {
+      if (!leetcodeUsername) return null;
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/leetcode/lcprofile/publicProfile?username=${leetcodeUsername}`, {
         withCredentials: true,
       });
       return response.data;
     },
-    enabled: !!userDetails?.name && !!leetcodeUsername,
+    enabled: !!userDetails?.name && !!leetcodeUsername && leetcodeUsername !== "",
     staleTime: 0,
     refetchOnMount: true,
+    retry: false,
+    refetchOnWindowFocus: false
   });
   
   const {data: codeforcesProfile, isLoading: isCodeforcesLoading} = useQuery({
-    queryKey: ["codeforcesProfile"],
+    queryKey: ["codeforcesProfile", codeforcesUsername],
     queryFn: async () => {
+      if (!codeforcesUsername) return null;
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/codeforces/user/info?handle=${codeforcesUsername}`);
       return response.data;
     },
-    enabled: !!userDetails?.name && !!codeforcesUsername,
+    enabled: !!userDetails?.name && !!codeforcesUsername && codeforcesUsername !== "",
     staleTime: 0,
     refetchOnMount: true,
+    retry: false,
+    refetchOnWindowFocus: false
   });
 
   const leetcodeUserProfile = leetcodeProfile?.data;
